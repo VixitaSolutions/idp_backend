@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class EncryptionDecryptionAES {
 	private static final String ALGO = "AES";
-	private static final byte[] KEYVALUE = new byte[] { 'T', 'I', 'G', 'E', 'R', 'I', 'S', 'N', 'A', 'T', 'I', 'O', 'N',
-			'A', 'L', 'O' };
+	private static final byte[] KEYVALUE = new byte[] { 'D', 'O', 'N', 'T', 'H', 'A', 'C', 'K', 'M', 'E', 'A', 'N', 'Y',
+			'W', 'A', 'Y' };
 	static String encodedBase64Key = encodeKey(KEYVALUE);
 
 	public static String encrypt(final String Data) throws Exception {
@@ -40,9 +40,7 @@ public class EncryptionDecryptionAES {
 
 	public static String encodeKey(byte[] secretKey) {
 		byte[] encoded = Base64.getEncoder().encode(secretKey);
-		String ENCODED = new String(encoded);
-		System.out.println("EncodedBase64Key = " + ENCODED); // This need to be share between client and server
-		return ENCODED;
+		return new String(encoded);
 	}
 
 }

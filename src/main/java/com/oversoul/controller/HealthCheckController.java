@@ -11,9 +11,4 @@ public class HealthCheckController {
 		return "it is up";
 	}
 
-	@GetMapping("api/health-check")
-	public String apiHelthCheck() {
-		return "api/health-check is it up";
-	}
-
 }

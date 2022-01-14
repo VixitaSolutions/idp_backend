@@ -31,7 +31,6 @@ public class LsmOversoulApplication extends SpringBootServletInitializer {
 
 	@Bean
 	public LocaleResolver localeResolver() {
-		System.out.println("locale resolver");
 		return new ChatLocaleResolver();
 	}
 
