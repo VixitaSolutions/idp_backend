@@ -1,4 +1,4 @@
-package com.oversoul.security;
+package com.oversoul.security.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -18,7 +18,6 @@ import org.springframework.security.web.authentication.AbstractAuthenticationPro
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
-import com.oversoul.security.config.WebSecurityConfig;
 import com.oversoul.security.jwt.extractor.TokenExtractor;
 import com.oversoul.security.model.RawAccessJwtToken;
 import com.oversoul.security.model.UserContext;

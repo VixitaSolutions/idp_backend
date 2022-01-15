@@ -1,4 +1,4 @@
-package com.oversoul.security.config;
+package com.oversoul.security;
 
 import java.util.Arrays;
 import java.util.List;
@@ -17,11 +17,6 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.oversoul.security.AjaxAuthenticationProvider;
-import com.oversoul.security.AjaxLoginProcessingFilter;
-import com.oversoul.security.JwtAuthenticationProvider;
-import com.oversoul.security.JwtTokenAuthenticationProcessingFilter;
-import com.oversoul.security.SkipPathRequestMatcher;
 import com.oversoul.security.endpoint.RestAuthenticationEntryPoint;
 import com.oversoul.security.jwt.extractor.TokenExtractor;
 import com.oversoul.security.service.HelperService;
@@ -37,8 +32,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	public static final String TOKEN_BASED_AUTH_ENTRY_POINT = "/api/**";
 
 	public static final String TOKEN_REFRESH_ENTRY_POINT = "/api/v1/login/**";
-
-	public static final String REFRESH_ENTRY_POINT_V2 = "/api/auth/v2/token";
 
 	@Autowired
 	private RestAuthenticationEntryPoint authenticationEntryPoint;
@@ -105,20 +98,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
 				.and().authorizeRequests().antMatchers(FORM_BASED_LOGIN_ENTRY_POINT).permitAll()// Login
-				.antMatchers(TOKEN_REFRESH_ENTRY_POINT).permitAll() // Token
-																	// refresh
-																	// end-point
-				.antMatchers(REFRESH_ENTRY_POINT_V2).permitAll()
-				// H2
-				// Console
-				// Dash-board
-				// -
-				// only
-				// for
-				// testing
-				.and().authorizeRequests().antMatchers(TOKEN_BASED_AUTH_ENTRY_POINT).authenticated() // Protected
-																										// API
-																										// End-points
+				.antMatchers(TOKEN_REFRESH_ENTRY_POINT).permitAll().and().authorizeRequests()
+				.antMatchers(TOKEN_BASED_AUTH_ENTRY_POINT).authenticated() // Protected
+				// API
+				// End-points
 				.and().addFilterBefore(buildAjaxLoginProcessingFilter(), UsernamePasswordAuthenticationFilter.class)
 
 				.addFilterBefore(buildJwtTokenAuthenticationProcessingFilter(),

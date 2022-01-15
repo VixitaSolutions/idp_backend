@@ -8,7 +8,9 @@ import io.jsonwebtoken.Claims;
  * Raw representation of JWT Token.
  */
 public final class AccessJwtToken implements JwtToken {
+
 	private final String rawToken;
+
 	@JsonIgnore
 	private Claims claims;
 

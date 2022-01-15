@@ -13,20 +13,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.oversoul.security.config.JwtSettings;
 import com.oversoul.security.service.HelperService;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
-/**
- * Factory class that should be always used to create {@link JwtToken}.
- * 
- * 
- *
- * 
- */
 @Component
 public class JwtTokenFactory {
 

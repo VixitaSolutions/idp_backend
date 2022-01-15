@@ -25,8 +25,6 @@ import com.oversoul.entity.User;
 import com.oversoul.entity.UserRole;
 import com.oversoul.repository.UserRepository;
 import com.oversoul.repository.UserRoleRepository;
-import com.oversoul.security.exceptions.ConflictException;
-import com.oversoul.security.exceptions.InvalidOAuthAccess;
 import com.oversoul.security.model.LoginType;
 import com.oversoul.security.model.UserContext;
 
@@ -116,8 +114,6 @@ public class AjaxAuthenticationProvider implements AuthenticationProvider {
 				}
 
 				loggedUser = user.getEmail();
-				// userDetails = user;
-				/* fetch the rules based on userId */
 				userRoles = userRoleRepository.findByUserId(user);
 				List<String> roleString = new ArrayList<>();
 				if (userRoles == null) {
@@ -130,31 +126,6 @@ public class AjaxAuthenticationProvider implements AuthenticationProvider {
 
 				userContext = UserContext.createContext(loggedUser, user.getId().toString(), loginType, authorities);
 
-				// send Signin OTP to user
-				/*
-				 * UserSignUpOtp signUpOtp = new UserSignUpOtp(); UserSignUpOtp userOtp =
-				 * userSignUpOtpRepo.findByUserId(userDetails.getId());
-				 * 
-				 * if (userOtp == null) { signUpOtp.setUserId(userDetails.getId());
-				 * signUpOtp.setType(EmailStat.SIGNUP_INVITE); Integer otp = (int)
-				 * (Math.floor(100000 + Math.random() * 900000));
-				 * signUpOtp.setCode(otp.toString()); signUpOtp =
-				 * userSignUpOtpRepo.save(signUpOtp); } else { Integer otp = (int)
-				 * (Math.floor(100000 + Math.random() * 900000));
-				 * userOtp.setCode(otp.toString()); signUpOtp = userSignUpOtpRepo.save(userOtp);
-				 * }
-				 * 
-				 * String emailContent = adminSignupservice.getSignUpOtpEmailContent(signUpOtp);
-				 * LOG.info(" client email ======" + userDetails.getEmail());
-				 * sesMailService.sendMail(userDetails.getEmail(), Constants.LOGIN_OTP,
-				 * emailContent);
-				 */
-
-				/*
-				 * if (LoginType.bySSO == loginType) { User user = new User();
-				 * user.setSignUpViaSSO(true); userRepository.save(user); }
-				 */
-
 				return new UsernamePasswordAuthenticationToken(userContext, null, userContext.getAuthorities());
 			}
 			throw new InsufficientAuthenticationException(
@@ -164,10 +135,6 @@ public class AjaxAuthenticationProvider implements AuthenticationProvider {
 				throw new UsernameNotFoundException(e.getMessage());
 			} else if (e instanceof BadCredentialsException) {
 				throw new BadCredentialsException(e.getMessage());
-			} else if (e instanceof InvalidOAuthAccess) {
-				throw new InvalidOAuthAccess(e.getMessage());
-			} else if (e instanceof ConflictException) {
-				throw new ConflictException(e.getMessage());
 			} else {
 				e.printStackTrace();
 				throw new InsufficientAuthenticationException(e.getMessage());

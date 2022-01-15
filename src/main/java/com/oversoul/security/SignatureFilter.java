@@ -28,7 +28,6 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oversoul.common.WebUtil;
-import com.oversoul.security.config.MultiReadHttpServletRequest;
 
 @Component
 @WebFilter("*")
@@ -77,7 +76,7 @@ public class SignatureFilter implements Filter {
 			throws IOException, ServletException {
 
 		try {
-			MultiReadHttpServletRequest request = new MultiReadHttpServletRequest((HttpServletRequest) req);
+			HttpServletRequest request = (HttpServletRequest) req;
 
 			MDC.put("uri", request.getRequestURI());
 			MDC.clear();

@@ -27,7 +27,7 @@ import com.oversoul.entity.User;
 import com.oversoul.entity.UserRole;
 import com.oversoul.repository.UserRepository;
 import com.oversoul.repository.UserRoleRepository;
-import com.oversoul.security.config.WebSecurityConfig;
+import com.oversoul.security.WebSecurityConfig;
 import com.oversoul.security.exceptions.JwtExpiredTokenException;
 import com.oversoul.security.jwt.extractor.TokenExtractor;
 import com.oversoul.security.model.JwtTokenFactory;

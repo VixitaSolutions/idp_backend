@@ -23,6 +23,8 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oversoul.common.WebUtil;
+import com.oversoul.security.exceptions.AuthMethodNotSupportedException;
+import com.oversoul.security.model.LoginRequest;
 import com.oversoul.security.model.LoginType;
 import com.oversoul.security.service.HelperService;
 

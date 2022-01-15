@@ -8,6 +8,7 @@ import io.jsonwebtoken.Jws;
 
 @SuppressWarnings("unchecked")
 public class RefreshToken implements JwtToken {
+
 	private Jws<Claims> claims;
 
 	private RefreshToken(Jws<Claims> claims) {

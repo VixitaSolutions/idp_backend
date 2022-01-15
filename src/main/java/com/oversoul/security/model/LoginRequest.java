@@ -1,8 +1,7 @@
-package com.oversoul.security;
+package com.oversoul.security.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.oversoul.security.model.LoginType;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

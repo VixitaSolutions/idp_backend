@@ -1,4 +1,4 @@
-package com.oversoul.security.config;
+package com.oversoul.security.model;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;

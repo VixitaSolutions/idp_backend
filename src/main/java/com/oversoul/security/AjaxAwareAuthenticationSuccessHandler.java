@@ -31,6 +31,7 @@ import com.oversoul.repository.UserRepository;
 import com.oversoul.repository.UserRoleRepository;
 import com.oversoul.security.model.JwtToken;
 import com.oversoul.security.model.JwtTokenFactory;
+import com.oversoul.security.model.Tokens;
 import com.oversoul.security.model.UserContext;
 
 /**

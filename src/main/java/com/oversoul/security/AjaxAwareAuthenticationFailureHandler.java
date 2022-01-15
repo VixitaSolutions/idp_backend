@@ -17,11 +17,8 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.oversoul.security.exceptions.ConflictException;
-import com.oversoul.security.exceptions.GustException;
-import com.oversoul.security.exceptions.InvalidOAuthAccess;
+import com.oversoul.security.exceptions.AuthMethodNotSupportedException;
 import com.oversoul.security.exceptions.JwtExpiredTokenException;
-import com.oversoul.security.exceptions.PasswordExpiryException;
 import com.oversoul.vo.BaseResponse;
 
 @Component
@@ -59,21 +56,7 @@ public class AjaxAwareAuthenticationFailureHandler implements AuthenticationFail
 		} else if (e instanceof UsernameNotFoundException && e.getMessage() != null) {
 			baseResponse.setMessage(e.getMessage());
 			baseResponse.setStatus(HttpStatus.PRECONDITION_FAILED.value());
-		} else if (e instanceof GustException) {
-			baseResponse.setMessage(messageSource.getMessage("guestIdDoesNotExist", null, null));
-			baseResponse.setStatus(HttpStatus.PRECONDITION_FAILED.value());
-		} else if (e instanceof InvalidOAuthAccess) {
-			baseResponse.setMessage(messageSource.getMessage("loginAgain", null, null));
-			baseResponse.setStatus(HttpStatus.FORBIDDEN.value());
-		} else if (e instanceof ConflictException) {
-			baseResponse.setMessage(messageSource.getMessage("verifyEmailAndTry", null, null));
-			baseResponse.setStatus(HttpStatus.CONFLICT.value());
-		} else if (e instanceof PasswordExpiryException) {
-			baseResponse.setMessage(messageSource.getMessage("passwordExpired", null, null));
-			baseResponse.setStatus(HttpStatus.CONFLICT.value());
-		}
-
-		else {
+		} else {
 			baseResponse.setMessage(e.getMessage() != null ? e.getMessage()
 					: messageSource.getMessage("authenticationFailed", null, null));
 			baseResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
