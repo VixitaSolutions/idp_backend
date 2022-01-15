@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oversoul.security.exceptions.AuthMethodNotSupportedException;
 import com.oversoul.security.exceptions.JwtExpiredTokenException;
-import com.oversoul.vo.BaseResponse;
+import com.oversoul.vo.ApiReturn;
 
 @Component
 public class AjaxAwareAuthenticationFailureHandler implements AuthenticationFailureHandler {
@@ -37,7 +37,7 @@ public class AjaxAwareAuthenticationFailureHandler implements AuthenticationFail
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException e) throws IOException, ServletException {
 
-		BaseResponse baseResponse = new BaseResponse();
+		ApiReturn baseResponse = new ApiReturn();
 
 		response.setStatus(HttpStatus.UNAUTHORIZED.value());
 		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
@@ -45,21 +45,21 @@ public class AjaxAwareAuthenticationFailureHandler implements AuthenticationFail
 		if (e instanceof BadCredentialsException) {
 			baseResponse.setMessage(e.getMessage() != null ? e.getMessage()
 					: messageSource.getMessage("invaliUserNameOrPwd", null, null));
-			baseResponse.setStatus(HttpStatus.PRECONDITION_FAILED.value());
+			baseResponse.setCode(HttpStatus.PRECONDITION_FAILED.value());
 
 		} else if (e instanceof JwtExpiredTokenException) {
 			baseResponse.setMessage(messageSource.getMessage("loginAgain", null, null));
-			baseResponse.setStatus(HttpStatus.FORBIDDEN.value());
+			baseResponse.setCode(HttpStatus.FORBIDDEN.value());
 		} else if (e instanceof AuthMethodNotSupportedException) {
 			baseResponse.setMessage(e.getMessage());
-			baseResponse.setStatus(HttpStatus.METHOD_NOT_ALLOWED.value());
+			baseResponse.setCode(HttpStatus.METHOD_NOT_ALLOWED.value());
 		} else if (e instanceof UsernameNotFoundException && e.getMessage() != null) {
 			baseResponse.setMessage(e.getMessage());
-			baseResponse.setStatus(HttpStatus.PRECONDITION_FAILED.value());
+			baseResponse.setCode(HttpStatus.PRECONDITION_FAILED.value());
 		} else {
 			baseResponse.setMessage(e.getMessage() != null ? e.getMessage()
 					: messageSource.getMessage("authenticationFailed", null, null));
-			baseResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			baseResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
 		}
 
 		mapper.writeValue(response.getWriter(), baseResponse);

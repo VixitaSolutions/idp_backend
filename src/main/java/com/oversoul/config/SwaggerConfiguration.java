@@ -1,4 +1,4 @@
-package com.oversoul.security.config;
+package com.oversoul.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

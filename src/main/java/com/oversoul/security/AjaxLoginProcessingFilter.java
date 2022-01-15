@@ -26,7 +26,6 @@ import com.oversoul.common.WebUtil;
 import com.oversoul.security.exceptions.AuthMethodNotSupportedException;
 import com.oversoul.security.model.LoginRequest;
 import com.oversoul.security.model.LoginType;
-import com.oversoul.security.service.HelperService;
 
 /**
  * AjaxLoginProcessingFilter
@@ -38,8 +37,6 @@ public class AjaxLoginProcessingFilter extends AbstractAuthenticationProcessingF
 	private final AuthenticationFailureHandler failureHandler;
 
 	private final ObjectMapper objectMapper;
-
-	private HelperService helperService;
 
 	@Autowired
 	private MessageSource messageSource;
@@ -106,17 +103,4 @@ public class AjaxLoginProcessingFilter extends AbstractAuthenticationProcessingF
 		failureHandler.onAuthenticationFailure(request, response, failed);
 	}
 
-	/**
-	 * @return the helperService
-	 */
-	public HelperService getHelperService() {
-		return helperService;
-	}
-
-	/**
-	 * @param helperService the helperService to set
-	 */
-	public void setHelperService(HelperService helperService) {
-		this.helperService = helperService;
-	}
 }

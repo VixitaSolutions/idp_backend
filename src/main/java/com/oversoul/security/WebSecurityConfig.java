@@ -19,7 +19,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oversoul.security.endpoint.RestAuthenticationEntryPoint;
 import com.oversoul.security.jwt.extractor.TokenExtractor;
-import com.oversoul.security.service.HelperService;
 
 @Configuration
 @EnableWebSecurity
@@ -57,14 +56,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private ObjectMapper objectMapper;
 
-	@Autowired
-	private HelperService helperService;
-
 	protected AjaxLoginProcessingFilter buildAjaxLoginProcessingFilter() throws Exception {
 		AjaxLoginProcessingFilter filter = new AjaxLoginProcessingFilter(FORM_BASED_LOGIN_ENTRY_POINT, successHandler,
 				failureHandler, objectMapper);
 		filter.setAuthenticationManager(this.authenticationManager);
-		filter.setHelperService(helperService);
 		return filter;
 	}
 
@@ -74,7 +69,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		JwtTokenAuthenticationProcessingFilter filter = new JwtTokenAuthenticationProcessingFilter(failureHandler,
 				tokenExtractor, matcher);
 		filter.setAuthenticationManager(this.authenticationManager);
-		filter.setHelperService(helperService);
 		return filter;
 	}
 

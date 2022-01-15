@@ -30,13 +30,14 @@ import com.oversoul.repository.UserRoleRepository;
 import com.oversoul.security.WebSecurityConfig;
 import com.oversoul.security.exceptions.JwtExpiredTokenException;
 import com.oversoul.security.jwt.extractor.TokenExtractor;
+import com.oversoul.security.model.JwtSettings;
 import com.oversoul.security.model.JwtTokenFactory;
 import com.oversoul.security.model.RawAccessJwtToken;
 import com.oversoul.security.model.RefreshToken;
 import com.oversoul.security.model.TokenVerifier;
 import com.oversoul.security.model.UserContext;
-import com.oversoul.security.service.HelperService;
-import com.oversoul.vo.BaseResponse;
+import com.oversoul.vo.ApiReturn;
+import com.oversoul.vo.ApiReturnWithResult;
 
 /**
  * RefreshTokenEndpoint
@@ -58,30 +59,30 @@ public class RefreshTokenEndpoint {
 	private TokenExtractor tokenExtractor;
 
 	@Autowired
-	private HelperService helperService;
+	private MessageSource messageSource;
 
 	@Autowired
-	private MessageSource messageSource;
+	private JwtSettings jwtSettings;
 
 	@Autowired
 	private UserRoleRepository userRoleRepo;
 
 	@RequestMapping(value = "/api/auth/refreshToken", method = RequestMethod.GET, produces = {
 			MediaType.APPLICATION_JSON_VALUE })
-	public @ResponseBody BaseResponse refreshToken(HttpServletRequest request, HttpServletResponse response) {
+	public @ResponseBody ApiReturn refreshToken(HttpServletRequest request, HttpServletResponse response) {
 
 		try {
 			String tokenPayload = tokenExtractor.extract(request.getHeader(WebSecurityConfig.JWT_TOKEN_HEADER_PARAM));
 
 			RawAccessJwtToken rawToken = new RawAccessJwtToken(tokenPayload);
-			Optional<RefreshToken> refreshToken = RefreshToken.create(rawToken, helperService.getJwtSigningKey());
+			Optional<RefreshToken> refreshToken = RefreshToken.create(rawToken, jwtSettings.getTokenSigningKey());
 
 			if (!refreshToken.isPresent()) {
-				return formBaseReponse("Invalid JWT. Please verify", HttpStatus.UNAUTHORIZED.value(), null);
+				return new ApiReturn(HttpStatus.UNAUTHORIZED.value(), "Invalid JWT. Please verify", null);
 			}
 			String jti = refreshToken.get().getJti();
 			if (!tokenVerifier.verify(jti)) {
-				return formBaseReponse("Invalid JWT. Please verify", HttpStatus.UNAUTHORIZED.value(), null);
+				return new ApiReturn(HttpStatus.UNAUTHORIZED.value(), "Invalid JWT. Please verify", null);
 			}
 
 			String subject = refreshToken.get().getSubject();
@@ -113,22 +114,16 @@ public class RefreshTokenEndpoint {
 					.map(authority -> new SimpleGrantedAuthority(authority)).collect(Collectors.toList());
 
 			userContext = UserContext.create(loggedUser, user.get().getId().toString(), null, authorities);
-			return formBaseReponse(messageSource.getMessage("tokenProvided", null, request.getLocale()),
-					HttpStatus.OK.value(), tokenFactory.createAccessJwtToken(userContext));
+
+			return new ApiReturnWithResult(HttpStatus.OK.value(),
+					messageSource.getMessage("tokenProvided", null, request.getLocale()),
+					tokenFactory.createAccessJwtToken(userContext));
+
 		} catch (Exception e) {
-			return formBaseReponse(messageSource.getMessage("invalidTokenProvided", null, request.getLocale()),
-					HttpStatus.EXPECTATION_FAILED.value(), null);
+			return new ApiReturn(HttpStatus.EXPECTATION_FAILED.value(),
+					messageSource.getMessage("invalidTokenProvided", null, request.getLocale()), null);
+
 		}
 	}
 
-	private BaseResponse formBaseReponse(String message, int status, Object data) {
-		BaseResponse baseResponse = new BaseResponse();
-		baseResponse.setMessage(message);
-		baseResponse.setStatus(status);
-		if (data != null) {
-			baseResponse.setData(data);
-		}
-		return baseResponse;
-
-	}
 }

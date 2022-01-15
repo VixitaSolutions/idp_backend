@@ -21,7 +21,6 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import com.oversoul.security.jwt.extractor.TokenExtractor;
 import com.oversoul.security.model.RawAccessJwtToken;
 import com.oversoul.security.model.UserContext;
-import com.oversoul.security.service.HelperService;
 
 /**
  * Performs validation of provided JWT Token.
@@ -29,8 +28,6 @@ import com.oversoul.security.service.HelperService;
 public class JwtTokenAuthenticationProcessingFilter extends AbstractAuthenticationProcessingFilter {
 	private final AuthenticationFailureHandler failureHandler;
 	private final TokenExtractor tokenExtractor;
-
-	private HelperService helperService;
 
 	@Autowired
 	public JwtTokenAuthenticationProcessingFilter(AuthenticationFailureHandler failureHandler,
@@ -76,17 +73,4 @@ public class JwtTokenAuthenticationProcessingFilter extends AbstractAuthenticati
 		failureHandler.onAuthenticationFailure(request, response, failed);
 	}
 
-	/**
-	 * @return the helperService
-	 */
-	public HelperService getHelperService() {
-		return helperService;
-	}
-
-	/**
-	 * @param helperService the helperService to set
-	 */
-	public void setHelperService(HelperService helperService) {
-		this.helperService = helperService;
-	}
 }

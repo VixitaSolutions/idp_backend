@@ -13,8 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.oversoul.security.service.HelperService;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -25,9 +23,6 @@ public class JwtTokenFactory {
 	private static Logger LOG = LoggerFactory.getLogger(JwtTokenFactory.class);
 
 	private final JwtSettings settings;
-
-	@Autowired
-	private HelperService helperService;
 
 	@Autowired
 	public JwtTokenFactory(JwtSettings settings) {
@@ -54,7 +49,7 @@ public class JwtTokenFactory {
 
 		LocalDateTime currentTime = LocalDateTime.now();
 
-		String signingKey = helperService.getJwtSigningKey();
+		String signingKey = settings.getTokenSigningKey();
 		LOG.info("Signing in with :: " + signingKey);
 
 		String token = Jwts.builder().setClaims(claims).setIssuer(settings.getTokenIssuer())
@@ -81,7 +76,7 @@ public class JwtTokenFactory {
 				.setIssuedAt(Date.from(currentTime.atZone(ZoneId.systemDefault()).toInstant()))
 				.setExpiration(Date.from(currentTime.plusMinutes(settings.getRefreshTokenExpTime())
 						.atZone(ZoneId.systemDefault()).toInstant()))
-				.signWith(SignatureAlgorithm.HS512, helperService.getJwtSigningKey()).compact();
+				.signWith(SignatureAlgorithm.HS512, settings.getTokenSigningKey()).compact();
 		return new AccessJwtToken(token, claims);
 	}
 }

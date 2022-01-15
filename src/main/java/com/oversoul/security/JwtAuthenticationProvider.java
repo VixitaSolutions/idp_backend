@@ -18,10 +18,10 @@ import org.springframework.stereotype.Component;
 
 import com.oversoul.entity.User;
 import com.oversoul.repository.UserRepository;
+import com.oversoul.security.model.JwtSettings;
 import com.oversoul.security.model.JwtToken;
 import com.oversoul.security.model.RawAccessJwtToken;
 import com.oversoul.security.model.UserContext;
-import com.oversoul.security.service.HelperService;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -40,21 +40,21 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 	private UserRepository userRepo;
 
 	@Autowired
-	private HelperService helperService;
+	private MessageSource messageSource;
 
 	@Autowired
-	private MessageSource messageSource;
+	private JwtSettings jwtSettings;
 
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
-		//JwtAuthenticationToken auth = (JwtAuthenticationToken) authentication;
+		// JwtAuthenticationToken auth = (JwtAuthenticationToken) authentication;
 
 		RawAccessJwtToken rawAccessToken = (RawAccessJwtToken) authentication.getCredentials();
 
-		Jws<Claims> jwsClaims = rawAccessToken.parseClaims(helperService.getJwtSigningKey());
+		Jws<Claims> jwsClaims = rawAccessToken.parseClaims(jwtSettings.getTokenSigningKey());
 		String subject = jwsClaims.getBody().getSubject();
-		//long issuedDate = jwsClaims.getBody().getIssuedAt().getTime();
+		// long issuedDate = jwsClaims.getBody().getIssuedAt().getTime();
 
 		LOG.info("Issued at :: " + jwsClaims.getBody().getIssuedAt() + " Time : "
 				+ jwsClaims.getBody().getIssuedAt().getTime());
@@ -65,7 +65,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 		JwtAuthenticationToken jwtAuthenticationToken = null;
 
 		lastResetTokenDate /= 1000;
-		//issuedDate /= 1000;
+		// issuedDate /= 1000;
 		List<String> scopes = jwsClaims.getBody().get("scopes", List.class);
 		List<GrantedAuthority> authorities = scopes.stream().map(authority -> new SimpleGrantedAuthority(authority))
 				.collect(Collectors.toList());
