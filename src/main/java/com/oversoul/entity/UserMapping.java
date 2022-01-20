@@ -6,7 +6,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -20,19 +19,20 @@ import lombok.Setter;
 @Data
 @Setter
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
-public class UserRole {
+public class UserMapping {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
-	@ManyToOne
-	private Role roleId;
+	private Long managerId;
 
-	private Long userId;
+	private Long coachId;
+
+	private Long employeeId;
 
 	@CreationTimestamp
 	private Date createdOn;
@@ -40,6 +40,22 @@ public class UserRole {
 	@UpdateTimestamp
 	private Date updatedOn;
 
-	private Boolean active = true;
+	private Long mappedBy;
+
+	private boolean active = true;
+
+	private Long deLinked;
+
+	private Long deLinkedBy;
+
+	private Date deLinkedOn;
+
+	public UserMapping(Long managerId, Long coachId, Long employeeId, Long mappedBy) {
+		super();
+		this.managerId = managerId;
+		this.coachId = coachId;
+		this.employeeId = employeeId;
+		this.mappedBy = mappedBy;
+	}
 
 }

@@ -103,7 +103,7 @@ public class RefreshTokenEndpoint {
 			}
 
 			loggedUser = user.get().getEmail();
-			UserRole userRoles = userRoleRepo.findByUserId(user.get());
+			UserRole userRoles = userRoleRepo.findByUserId(user.get().getId());
 			List<String> roleString = new ArrayList<>();
 			if (userRoles == null) {
 				throw new InsufficientAuthenticationException("Insufficient role permissions");

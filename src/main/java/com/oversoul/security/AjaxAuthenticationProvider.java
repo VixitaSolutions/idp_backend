@@ -114,7 +114,7 @@ public class AjaxAuthenticationProvider implements AuthenticationProvider {
 				}
 
 				loggedUser = user.getEmail();
-				userRoles = userRoleRepository.findByUserId(user);
+				userRoles = userRoleRepository.findByUserId(user.getId());
 				List<String> roleString = new ArrayList<>();
 				if (userRoles == null) {
 					throw new InsufficientAuthenticationException("Insufficient role permissions");

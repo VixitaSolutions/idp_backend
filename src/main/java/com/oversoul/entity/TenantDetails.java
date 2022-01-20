@@ -6,11 +6,10 @@ import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -23,30 +22,23 @@ import lombok.Setter;
 @Data
 @Setter
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
-public class User {
+public class TenantDetails {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
+	@GeneratedValue(generator = "UUID")
+	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+	@Column(name = "id", updatable = false, nullable = false,length = 50)
+	@Type(type = "uuid-char")
+	private UUID id;
 
-	private String email;
+	private String tenantName;
 
-	private String firstName;
+	private String clientName;
 
-	private String lastName;
-
-	private String userName;
-
-	private String password;
-
-	private Long lastLoginTime;
-
-	private Boolean signUpDone;
-
-	private Date signUpDoneOn;
+	private String clientDescription;
 
 	@CreationTimestamp
 	private Date createdOn;
@@ -56,13 +48,6 @@ public class User {
 
 	private Long createdBy;
 
-	@Size(min = 10, max = 10)
-	private String mobile;
-
-	@Column(length = 50)
-	@Type(type = "uuid-char")
-	private UUID tenantId;
-
-	private boolean fromFileUpload;
+	private Long updatedBy;
 
 }

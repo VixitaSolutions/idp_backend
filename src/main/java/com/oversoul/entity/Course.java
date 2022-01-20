@@ -1,15 +1,18 @@
 package com.oversoul.entity;
 
 import java.util.Date;
+import java.util.UUID;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.validator.constraints.Length;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,19 +23,18 @@ import lombok.Setter;
 @Data
 @Setter
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
-public class UserRole {
+public class Course {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
-	@ManyToOne
-	private Role roleId;
+	private String courseName;
 
-	private Long userId;
+	private String description;
 
 	@CreationTimestamp
 	private Date createdOn;
@@ -40,6 +42,12 @@ public class UserRole {
 	@UpdateTimestamp
 	private Date updatedOn;
 
-	private Boolean active = true;
+	private Long createdBy;
+
+	private boolean active = true;
+
+	@Column(length = 50)
+	@Type(type = "uuid-char")
+	private UUID tenantId;
 
 }

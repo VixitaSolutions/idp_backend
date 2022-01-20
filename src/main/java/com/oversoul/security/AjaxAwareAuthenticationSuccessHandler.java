@@ -110,7 +110,7 @@ public class AjaxAwareAuthenticationSuccessHandler implements AuthenticationSucc
 					User user2 = user.get();
 					user2.setLastLoginTime(createdDate.getTime());
 					userRepository.save(user2);
-					UserRole userRole = userRoleRepository.findByUserId(user.get());
+					UserRole userRole = userRoleRepository.findByUserId(user.get().getId());
 					tokens.setRoleIds(userRole.getRoleId().getId());
 					LOG.info("User with Id : " + userContext.getUserId() + " logged in! and token :: "
 							+ accessToken.getToken() + "  ::::::::: Refresh Token ::::: " + refreshToken.getToken());

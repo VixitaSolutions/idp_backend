@@ -3,6 +3,8 @@ package com.oversoul.entity;
 import java.util.Date;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -10,6 +12,8 @@ import javax.persistence.ManyToOne;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+
+import com.oversoul.enums.TaskStatus;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,19 +24,28 @@ import lombok.Setter;
 @Data
 @Setter
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
-public class UserRole {
+public class EmployeeTaskDetails {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
 	@ManyToOne
-	private Role roleId;
+	private User employeeId;
 
-	private Long userId;
+	@ManyToOne
+	private Course courseType;
+
+	private String taskName;
+
+	private Long duration;
+
+	private String taskDescription;
+
+	private Long createdBy;
 
 	@CreationTimestamp
 	private Date createdOn;
@@ -40,6 +53,7 @@ public class UserRole {
 	@UpdateTimestamp
 	private Date updatedOn;
 
-	private Boolean active = true;
+	@Enumerated(EnumType.STRING)
+	private TaskStatus taskStatus;
 
 }

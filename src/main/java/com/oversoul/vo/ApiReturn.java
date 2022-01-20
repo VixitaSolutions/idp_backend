@@ -13,14 +13,7 @@ public class ApiReturn {
 	private Integer code;
 	private String status;
 	private String message;
-	// private List<String> errors = new ArrayList<String>(0);
-	// private String requestId = MDC.get("requestId");
-	// private String timestamp =
-	// Instant.now().atZone(ZoneId.systemDefault()).toString();
 
-	/*
-	 * private List list; private Object obj;
-	 */
 	public ApiReturn() {
 		this(HttpStatus.OK.value(), "Suceess", "SUCCESS");
 	}

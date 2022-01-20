@@ -1,10 +1,13 @@
 package com.oversoul.service;
 
+import com.oversoul.exception.CommonException;
 import com.oversoul.vo.ApiReturn;
-import com.oversoul.vo.ApiReturnWithResult;
+import com.oversoul.vo.UserRequest;
 
 public interface UserService {
 
 	ApiReturn getProfile();
+
+	ApiReturn createUser(UserRequest userRequest) throws CommonException;
 
 }

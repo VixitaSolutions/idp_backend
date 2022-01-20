@@ -38,4 +38,11 @@ public class ExceptionHandler {
 		return new ResponseEntity<ApiReturn>(api, HttpStatus.OK);
 	}
 
+	@org.springframework.web.bind.annotation.ExceptionHandler(CommonException.class)
+	public ResponseEntity<ApiReturn> commonData(CommonException ex) {
+		ApiReturn api = new ApiReturn(HttpStatus.OK.value(), ApiConstants.Status.FAILED.name(), ex.getMessage());
+		log.error("ERROR,{},{}", api, ex);
+		return new ResponseEntity<ApiReturn>(api, HttpStatus.OK);
+	}
+
 }

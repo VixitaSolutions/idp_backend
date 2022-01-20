@@ -6,10 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import com.oversoul.enums.TaskStatus;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,26 +18,23 @@ import lombok.Setter;
 @Data
 @Setter
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
-public class UserRole {
+public class EmployeeTaskHistory {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
-	@ManyToOne
-	private Role roleId;
+	private Long employeeTaskId;
 
-	private Long userId;
+	private TaskStatus status;
 
-	@CreationTimestamp
 	private Date createdOn;
 
-	@UpdateTimestamp
-	private Date updatedOn;
+	private String comment;
 
-	private Boolean active = true;
+	private Long commentedBy;
 
 }
