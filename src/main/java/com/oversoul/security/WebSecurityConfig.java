@@ -56,14 +56,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private ObjectMapper objectMapper;
 
-	protected AjaxLoginProcessingFilter buildAjaxLoginProcessingFilter() throws Exception {
+	protected AjaxLoginProcessingFilter buildAjaxLoginProcessingFilter() {
 		AjaxLoginProcessingFilter filter = new AjaxLoginProcessingFilter(FORM_BASED_LOGIN_ENTRY_POINT, successHandler,
 				failureHandler, objectMapper);
 		filter.setAuthenticationManager(this.authenticationManager);
 		return filter;
 	}
 
-	protected JwtTokenAuthenticationProcessingFilter buildJwtTokenAuthenticationProcessingFilter() throws Exception {
+	protected JwtTokenAuthenticationProcessingFilter buildJwtTokenAuthenticationProcessingFilter() {
 		List<String> pathsToSkip = Arrays.asList(TOKEN_REFRESH_ENTRY_POINT);
 		SkipPathRequestMatcher matcher = new SkipPathRequestMatcher(pathsToSkip, TOKEN_BASED_AUTH_ENTRY_POINT);
 		JwtTokenAuthenticationProcessingFilter filter = new JwtTokenAuthenticationProcessingFilter(failureHandler,

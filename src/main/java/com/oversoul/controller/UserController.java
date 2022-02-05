@@ -1,10 +1,6 @@
 package com.oversoul.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.oversoul.exception.CommonException;
 import com.oversoul.service.UserService;
@@ -42,6 +38,11 @@ public class UserController {
 	@PostMapping("userList")
 	public ApiReturn getEmployeesByClient(@RequestBody TenantDetailsReq client) throws CommonException {
 		return userService.getUserList(client.getId());
+	}
+
+	@GetMapping("update/status/{userId}")
+	public ApiReturn changeStatus(@RequestParam("status")boolean status, @PathVariable("userId")Long userId) throws CommonException {
+		return userService.changeStatus(status, userId);
 	}
 
 }

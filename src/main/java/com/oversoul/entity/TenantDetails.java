@@ -48,7 +48,7 @@ public class TenantDetails {
 	
 	private Date subscriptionEndDate;
 	
-	private String status;
+	private boolean status=true;
 
 	@CreationTimestamp
 	private Date createdOn;

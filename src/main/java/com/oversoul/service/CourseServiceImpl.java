@@ -17,9 +17,9 @@ import com.oversoul.vo.CourseReq;
 @Service
 public class CourseServiceImpl implements CourseService {
 
-	private CourseRepository courseRepo;
+	private final CourseRepository courseRepo;
 
-	private ObjectMapper objectMapper;
+	private final ObjectMapper objectMapper;
 
 	public CourseServiceImpl(CourseRepository courseRepo, ObjectMapper objectMapper) {
 		this.courseRepo = courseRepo;
@@ -55,7 +55,6 @@ public class CourseServiceImpl implements CourseService {
 						courseRepo.findByTenantIdAndActive(tenantId, active));
 			}
 		}
-
 	}
 
 }

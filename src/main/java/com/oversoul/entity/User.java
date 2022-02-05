@@ -65,4 +65,6 @@ public class User {
 
 	private boolean fromFileUpload;
 
+	private boolean active=true;
+
 }

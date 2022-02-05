@@ -32,13 +32,13 @@ public class UserMappingController {
 	}
 
 	@PutMapping("deLink")
-	public ApiReturn deLinkMappling(@RequestBody UserMapVo userMapVo) {
-		return userMappingService.deLinkMappling(userMapVo);
+	public ApiReturn deLinkMapping(@RequestBody UserMapVo userMapVo) {
+		return userMappingService.deLinkMapping(userMapVo);
 	}
 
-	@GetMapping("alloted/{employeeTypeId}")
-	public ApiReturn getAllotedEmployees(@PathVariable Long employeeTypeId, @RequestParam Long coachId)
+	@GetMapping("allocated/{employeeTypeId}")
+	public ApiReturn getAllocatedEmployees(@PathVariable Long employeeTypeId, @RequestParam Long coachId)
 			throws CommonException {
-		return userMappingService.getAllotedEmployeesByCoachId(employeeTypeId, coachId);
+		return userMappingService.getAllocatedEmployeesByCoachId(employeeTypeId, coachId);
 	}
 }

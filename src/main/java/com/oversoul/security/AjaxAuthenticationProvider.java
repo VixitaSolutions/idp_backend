@@ -72,13 +72,16 @@ public class AjaxAuthenticationProvider implements AuthenticationProvider {
 				if (loginType == null) {
 					throw new BadCredentialsException("Login Type required");
 				}
+				if (username==null){
+					throw new BadCredentialsException("UserName Type required");
+				}
 				System.out.println("auth id ==== " + authId);
 				// User user =
 				// userRepository.findByEmail(EncryptionDecryptionAES.encrypt(username.trim().toLowerCase()));
 
 				User user = userRepository.findByEmail(username.trim().toLowerCase());
 				/*
-				 * if login type is by user name means it will load the login details validate
+				 * if login type is by username means it will load the login details validate
 				 * the password for given username
 				 */
 
@@ -89,7 +92,7 @@ public class AjaxAuthenticationProvider implements AuthenticationProvider {
 
 				if (LoginType.byUserName == loginType) {
 
-					if (username == null || password == null) {
+					if (password == null) {
 						throw new BadCredentialsException(
 								messageSource.getMessage("emailOrPwdInvalid", null, LocaleContextHolder.getLocale()));
 					}
@@ -122,7 +125,7 @@ public class AjaxAuthenticationProvider implements AuthenticationProvider {
 				roleString = Arrays.asList(userRoles.getRoleId().getName());
 
 				List<GrantedAuthority> authorities = roleString.stream()
-						.map(authority -> new SimpleGrantedAuthority(authority)).collect(Collectors.toList());
+						.map(SimpleGrantedAuthority::new).collect(Collectors.toList());
 
 				userContext = UserContext.createContext(loggedUser, user.getId().toString(), loginType, authorities);
 
@@ -131,9 +134,8 @@ public class AjaxAuthenticationProvider implements AuthenticationProvider {
 			throw new InsufficientAuthenticationException(
 					messageSource.getMessage("exceptionInLoginInputParsing", null, LocaleContextHolder.getLocale()));
 		} catch (Exception e) {
-			if (e instanceof UsernameNotFoundException) {
-				throw new UsernameNotFoundException(e.getMessage());
-			} else if (e instanceof BadCredentialsException) {
+			if (e instanceof UsernameNotFoundException) throw new UsernameNotFoundException(e.getMessage());
+			else if (e instanceof BadCredentialsException) {
 				throw new BadCredentialsException(e.getMessage());
 			} else {
 				e.printStackTrace();

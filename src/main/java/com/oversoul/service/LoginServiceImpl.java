@@ -19,9 +19,11 @@ import com.oversoul.vo.UserSignUpVo;
 @Service
 public class LoginServiceImpl implements LoginService {
 
-	private UserRepository userRepo;
+	private static final String USER_NOT_FOUND_OR_INACTIVE = "User Not Found or Inactive";
 
-	private UserOtpDetailsRepository userOtpDetailsRepo;
+	private final UserRepository userRepo;
+
+	private final UserOtpDetailsRepository userOtpDetailsRepo;
 
 	public LoginServiceImpl(UserRepository userRepo, UserOtpDetailsRepository userOtpDetailsRepo) {
 		this.userRepo = userRepo;
@@ -37,7 +39,7 @@ public class LoginServiceImpl implements LoginService {
 			userOtpDetailsRepo.save(new UserOtpDetails(userId, otp.toString(), userSignUpVo.getOtpType()));
 			return new ApiReturn(HttpStatus.OK.value(), ApiConstants.Status.SUCCESS.name(), "OTP Sent Successfully");
 		}
-		return new ApiReturn(HttpStatus.OK.value(), ApiConstants.Status.FAILED.name(), "User Not Found or Inactive");
+		return new ApiReturn(HttpStatus.OK.value(), ApiConstants.Status.FAILED.name(), USER_NOT_FOUND_OR_INACTIVE);
 
 	}
 
@@ -58,7 +60,7 @@ public class LoginServiceImpl implements LoginService {
 						"OTP Verification Failed");
 			}
 		}
-		return new ApiReturn(HttpStatus.OK.value(), ApiConstants.Status.FAILED.name(), "User Not Found or Inactive");
+		return new ApiReturn(HttpStatus.OK.value(), ApiConstants.Status.FAILED.name(), USER_NOT_FOUND_OR_INACTIVE);
 
 	}
 
@@ -73,7 +75,7 @@ public class LoginServiceImpl implements LoginService {
 			return new ApiReturn(HttpStatus.OK.value(), ApiConstants.Status.SUCCESS.name(),
 					"Temporary Password Sent Successfully");
 		}
-		return new ApiReturn(HttpStatus.OK.value(), ApiConstants.Status.FAILED.name(), "User Not Found or Inactive");
+		return new ApiReturn(HttpStatus.OK.value(), ApiConstants.Status.FAILED.name(), USER_NOT_FOUND_OR_INACTIVE);
 
 	}
 
@@ -84,7 +86,7 @@ public class LoginServiceImpl implements LoginService {
 			return new ApiReturn(HttpStatus.OK.value(), ApiConstants.Status.SUCCESS.name(),
 					"Temporary Password verified Successfully");
 		}
-		return new ApiReturn(HttpStatus.OK.value(), ApiConstants.Status.FAILED.name(), "Invalide Password");
+		return new ApiReturn(HttpStatus.OK.value(), ApiConstants.Status.FAILED.name(), "Invalid Password");
 
 	}
 
@@ -99,7 +101,7 @@ public class LoginServiceImpl implements LoginService {
 			return new ApiReturn(HttpStatus.OK.value(), ApiConstants.Status.SUCCESS.name(),
 					"Password updated Successfully");
 		}
-		return new ApiReturn(HttpStatus.OK.value(), ApiConstants.Status.FAILED.name(), "User Not Found or Inactive");
+		return new ApiReturn(HttpStatus.OK.value(), ApiConstants.Status.FAILED.name(), USER_NOT_FOUND_OR_INACTIVE);
 	}
 
 }

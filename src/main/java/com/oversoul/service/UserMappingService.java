@@ -8,8 +8,8 @@ public interface UserMappingService {
 
 	ApiReturn userMapping(UserMapVo userMapVo) throws CommonException;
 
-	ApiReturn deLinkMappling(UserMapVo userMapVo);
+	ApiReturn deLinkMapping(UserMapVo userMapVo);
 
-	ApiReturn getAllotedEmployeesByCoachId(Long employeeId, Long coachId) throws CommonException;
+	ApiReturn getAllocatedEmployeesByCoachId(Long employeeId, Long coachId) throws CommonException;
 
 }

@@ -23,7 +23,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 @SecurityRequirement(name = "Authorization")
 public class TaskController {
 
-	private TaskService taskService;
+	private final TaskService taskService;
 
 	public TaskController(TaskService taskService) {
 		this.taskService = taskService;
@@ -39,12 +39,12 @@ public class TaskController {
 		return taskService.updateTask(taskReq);
 	}
 
-	@GetMapping("getAllotedTask")
-	public ApiReturn getAllotedTasks(@RequestParam(required = false) Long employeeId,
+	@GetMapping("getAllocatedTask")
+	public ApiReturn getAllocatedTasks(@RequestParam(required = false) Long employeeId,
 			@RequestParam(required = false) TaskStatus taskStatus, @RequestParam(required = false) Long courseType) throws CommonException {
 
 		return new ApiReturnWithResult(HttpStatus.OK.value(), ApiConstants.Status.SUCCESS.name(),
-				taskService.getAllotedTasks(employeeId, taskStatus, courseType));
+				taskService.getAllocatedTasks(employeeId, taskStatus, courseType));
 	}
 
 }

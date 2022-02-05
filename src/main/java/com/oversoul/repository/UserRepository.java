@@ -25,4 +25,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	User findByEmailAndTenantId(String encrypt, UUID tenantId);
 	
 	List<User> findByTenantId(UUID tenantId);
+
+	@Override
+	boolean existsById(Long aLong);
 }

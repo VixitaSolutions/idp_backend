@@ -32,6 +32,6 @@ public class TenantDetailsReq {
 	
 	private Date subscriptionEndDate;
 	
-	private String status;
+	private Boolean status;
 
 }

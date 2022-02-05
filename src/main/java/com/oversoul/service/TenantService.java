@@ -5,10 +5,10 @@ import com.oversoul.vo.TenantDetailsReq;
 
 public interface TenantService {
 
-	ApiReturn createTenant(TenantDetailsReq tenantDetails);
+    ApiReturn createTenant(TenantDetailsReq tenantDetails);
 
-	ApiReturn getTenants();
+    ApiReturn getTenants(TenantDetailsReq tenantDetails);
 
-	ApiReturn updateTenant(TenantDetailsReq tenantDetails) throws Exception;
+    ApiReturn updateTenant(TenantDetailsReq tenantDetails) throws Exception;
 
 }

@@ -12,11 +12,11 @@ public class UsernamePasswordAuthentication extends UsernamePasswordAuthenticati
 
 	private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
 
-	private Object loginType;
-	private Object authProvider;
-	private Object authId;
-	private Object accessToken;
-	private Object phone;
+	private transient Object loginType;
+	private transient Object authProvider;
+	private transient Object authId;
+	private transient Object accessToken;
+	private transient Object phone;
 
 	private long appId;
 
