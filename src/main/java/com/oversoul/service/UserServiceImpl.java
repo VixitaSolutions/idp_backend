@@ -1,6 +1,8 @@
 package com.oversoul.service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
@@ -92,6 +94,14 @@ public class UserServiceImpl implements UserService {
 		return new ApiReturn(HttpStatus.CREATED.value(), ApiConstants.Status.SUCCESS.name(),
 				"User created Succesfully");
 
+	}
+	
+	
+	@Override
+	public ApiReturn getUserList(UUID clientId) {
+		List<User> userList = userRepo.findByTenantId(clientId);
+		return new ApiReturnWithResult(HttpStatus.OK.value(), ApiConstants.Status.SUCCESS.name(),
+					userList);
 	}
 
 }

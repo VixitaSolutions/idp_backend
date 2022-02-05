@@ -29,7 +29,7 @@ public class CorsFilter implements Filter {
 		response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE, PUT");
 		response.setHeader("Access-Control-Max-Age", "3600");
 		response.setHeader("Access-Control-Allow-Headers",
-				"Cache-Control, Authorization,authorization,x-nonce,x-signature, Content-Type, Accept, X-Requested-With,appid, AppVersion,remember-me,roleId,pId");
+				"Cache-Control, Authorization,authorization,x-nonce,x-signature, Content-Type, Accept, X-Requested-With,appid, AppVersion,remember-me,roleId,pId,tenant-id");
 
 		if (notPreflight(request)) {
 			chain.doFilter(req, res);

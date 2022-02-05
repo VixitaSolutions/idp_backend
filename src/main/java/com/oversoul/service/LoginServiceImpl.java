@@ -2,7 +2,9 @@ package com.oversoul.service;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.UUID;
 
+import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -33,9 +35,9 @@ public class LoginServiceImpl implements LoginService {
 		if (userId != null) {
 			Integer otp = (int) (Math.floor(100000 + Math.random() * 900000));
 			userOtpDetailsRepo.save(new UserOtpDetails(userId, otp.toString(), userSignUpVo.getOtpType()));
-			return new ApiReturn(HttpStatus.OK.value(), ApiConstants.Status.SUCCESS.name(), "Otp Sent Successfully");
+			return new ApiReturn(HttpStatus.OK.value(), ApiConstants.Status.SUCCESS.name(), "OTP Sent Successfully");
 		}
-		return new ApiReturn(HttpStatus.OK.value(), ApiConstants.Status.FAILED.name(), "User Not Fount or Inactive");
+		return new ApiReturn(HttpStatus.OK.value(), ApiConstants.Status.FAILED.name(), "User Not Found or Inactive");
 
 	}
 
@@ -50,20 +52,20 @@ public class LoginServiceImpl implements LoginService {
 					userSignUpVo.getOtpType(), userSignUpVo.getOtp(), currentTimeNow.getTime());
 			if (isVerify) {
 				return new ApiReturn(HttpStatus.OK.value(), ApiConstants.Status.SUCCESS.name(),
-						"Otp Verification Success");
+						"OTP Verification Success");
 			} else {
 				return new ApiReturn(HttpStatus.OK.value(), ApiConstants.Status.FAILED.name(),
-						"Otp Verification Failed");
+						"OTP Verification Failed");
 			}
 		}
-		return new ApiReturn(HttpStatus.OK.value(), ApiConstants.Status.FAILED.name(), "User Not Fount or Inactive");
+		return new ApiReturn(HttpStatus.OK.value(), ApiConstants.Status.FAILED.name(), "User Not Found or Inactive");
 
 	}
 
 	@Override
 	public ApiReturn sendTemporaryPassword(UserSignUpVo userSignUpVo) {
 
-		User user = userRepo.findByEmail(userSignUpVo.getEmail());
+		User user = userRepo.findByEmailAndTenantId(userSignUpVo.getEmail(), UUID.fromString(MDC.get("tenantId")));
 		if (user != null) {
 			Integer otp = (int) (Math.floor(100000 + Math.random() * 900000));
 			user.setPassword(otp.toString());
@@ -71,7 +73,7 @@ public class LoginServiceImpl implements LoginService {
 			return new ApiReturn(HttpStatus.OK.value(), ApiConstants.Status.SUCCESS.name(),
 					"Temporary Password Sent Successfully");
 		}
-		return new ApiReturn(HttpStatus.OK.value(), ApiConstants.Status.FAILED.name(), "User Not Fount or Inactive");
+		return new ApiReturn(HttpStatus.OK.value(), ApiConstants.Status.FAILED.name(), "User Not Found or Inactive");
 
 	}
 
@@ -97,7 +99,7 @@ public class LoginServiceImpl implements LoginService {
 			return new ApiReturn(HttpStatus.OK.value(), ApiConstants.Status.SUCCESS.name(),
 					"Password updated Successfully");
 		}
-		return new ApiReturn(HttpStatus.OK.value(), ApiConstants.Status.FAILED.name(), "User Not Fount or Inactive");
+		return new ApiReturn(HttpStatus.OK.value(), ApiConstants.Status.FAILED.name(), "User Not Found or Inactive");
 	}
 
 }

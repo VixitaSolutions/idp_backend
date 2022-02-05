@@ -39,6 +39,16 @@ public class TenantDetails {
 	private String clientName;
 
 	private String clientDescription;
+	
+	private String email;
+	
+	private String mobile;
+	
+	private Date subscriptionStartDate;
+	
+	private Date subscriptionEndDate;
+	
+	private String status;
 
 	@CreationTimestamp
 	private Date createdOn;

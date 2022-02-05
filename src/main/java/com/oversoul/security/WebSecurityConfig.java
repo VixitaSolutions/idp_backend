@@ -30,7 +30,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	public static final String TOKEN_BASED_AUTH_ENTRY_POINT = "/api/v1/**";
 
-	public static final String TOKEN_REFRESH_ENTRY_POINT = "/api/v1/login/user/";
+	public static final String TOKEN_REFRESH_ENTRY_POINT = "/api/v1/login/**";
 
 	@Autowired
 	private RestAuthenticationEntryPoint authenticationEntryPoint;
