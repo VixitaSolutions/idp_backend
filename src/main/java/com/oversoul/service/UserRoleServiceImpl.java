@@ -10,6 +10,7 @@ import com.oversoul.util.ApiConstants;
 import com.oversoul.vo.ApiReturn;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserRoleServiceImpl implements UserRoleService {
@@ -40,6 +41,19 @@ public class UserRoleServiceImpl implements UserRoleService {
                 userRole.setRoleId(role);
             }
             userRoleRepo.save(userRole);
+            return new ApiReturn(HttpStatus.OK.value(), ApiConstants.Status.SUCCESS.name(),
+                    "User Role Updated");
+        }
+        throw new CommonException("User Not Found");
+
+    }
+
+    @Override
+    @Transactional
+    public ApiReturn removeRole(Long userId, Long roleId) throws CommonException {
+        Role role = roleRepo.findById(roleId).orElseThrow(() -> new CommonException("Role Not Found"));
+        if (userRepo.existsById(userId)) {
+            userRoleRepo.deleteByUserIdAndRoleId(userId, role);
             return new ApiReturn(HttpStatus.OK.value(), ApiConstants.Status.SUCCESS.name(),
                     "User Role Updated");
         }

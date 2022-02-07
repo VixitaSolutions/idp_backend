@@ -1,5 +1,6 @@
 package com.oversoul.controller;
 
+import com.oversoul.vo.UserListReq;
 import org.springframework.web.bind.annotation.*;
 
 import com.oversoul.exception.CommonException;
@@ -33,11 +34,11 @@ public class UserController {
 	public ApiReturn createUser(@RequestBody UserRequest userRequest) throws CommonException {
 		return userService.createUser(userRequest);
 	}
-	
+	//we need to fetch by tenantId, role Type
 	@Operation(summary = "This is to fetch users by client Id")
 	@PostMapping("userList")
-	public ApiReturn getEmployeesByClient(@RequestBody TenantDetailsReq client) throws CommonException {
-		return userService.getUserList(client.getId());
+	public ApiReturn getEmployeesByClient(@RequestBody UserListReq client) throws CommonException {
+		return userService.getUserList(client);
 	}
 
 	@GetMapping("update/status/{userId}")

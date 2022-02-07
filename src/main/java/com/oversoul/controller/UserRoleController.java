@@ -26,4 +26,11 @@ public class UserRoleController {
         return userRoleService.addRole(userId, roleId);
 
     }
+    //remove role API
+    @GetMapping("remove")
+    public ApiReturn removeRole(@RequestParam("userId") Long userId, @RequestParam("roleId") Long roleId) throws CommonException {
+
+        return userRoleService.removeRole(userId, roleId);
+
+    }
 }

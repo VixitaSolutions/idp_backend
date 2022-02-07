@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -60,7 +59,7 @@ public class UserServiceImpl implements UserService {
 
         }
         if (userRequest.getEmail().trim().length() == 0 || Boolean.TRUE
-				.equals(userRepo.existsByEmailAndTenantId(userRequest.getEmail(), userRequest.getTenantId()))) {
+                .equals(userRepo.existsByEmailAndTenantId(userRequest.getEmail(), userRequest.getTenantId()))) {
             throw new CommonException("Email already exists in the system");
         }
 
@@ -93,8 +92,18 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public ApiReturn getUserList(UUID clientId) {
-        List<User> userList = userRepo.findByTenantId(clientId);
+    public ApiReturn getUserList(UserListReq userListReq) {
+        List<User> userList = null;
+        if (userListReq != null && userListReq.getTenantId() != null && userListReq.getRoleId() != null) {
+            userList = userRepo.findByTenantIdAndRoleId_Id(userListReq.getTenantId(), userListReq.getRoleId());
+        } else if (userListReq != null && userListReq.getTenantId() != null) {
+            userList = userRepo.findByTenantId(userListReq.getTenantId());
+        } else if (userListReq != null && userListReq.getRoleId() != null) {
+            userList = userRepo.findByRoleId_Id(userListReq.getRoleId());
+        } else {
+            userList = userRepo.findAll();
+        }
+
         return new ApiReturnWithResult(HttpStatus.OK.value(), ApiConstants.Status.SUCCESS.name(),
                 userList);
     }
