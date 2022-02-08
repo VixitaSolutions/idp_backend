@@ -8,6 +8,7 @@ import com.oversoul.repository.UserRepository;
 import com.oversoul.repository.UserRoleRepository;
 import com.oversoul.util.ApiConstants;
 import com.oversoul.vo.ApiReturn;
+import com.oversoul.vo.ApiReturnWithResult;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,6 +59,25 @@ public class UserRoleServiceImpl implements UserRoleService {
                     "User Role Updated");
         }
         throw new CommonException("User Not Found");
+
+    }
+
+    @Override
+    public ApiReturn getRoles(Long roleId, Long userId) {
+
+        if (userId != null && userId != 0) {
+            UserRole userRole = userRoleRepo.findByUserId(userId);
+            return new ApiReturnWithResult(HttpStatus.OK.value(), ApiConstants.Status.SUCCESS.name(),
+                    userRole != null ? userRole.getRoleId() : null);
+        } else {
+            if (roleId != null && roleId != 0) {
+                return new ApiReturnWithResult(HttpStatus.OK.value(), ApiConstants.Status.SUCCESS.name(),
+                        roleRepo.findById(roleId));
+            }
+            return new ApiReturnWithResult(HttpStatus.OK.value(), ApiConstants.Status.SUCCESS.name(),
+                    roleRepo.findAll());
+        }
+
 
     }
 }

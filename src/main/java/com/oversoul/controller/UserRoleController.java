@@ -20,12 +20,20 @@ public class UserRoleController {
         this.userRoleService = userRoleService;
     }
 
+    @GetMapping("get/default")
+    public ApiReturn getRoles(@RequestParam(value = "userId", required = false) Long userId, @RequestParam(value = "roleId", required = false) Long roleId) throws CommonException {
+
+        return userRoleService.getRoles(roleId, userId);
+
+    }
+
     @GetMapping("add")
     public ApiReturn addRole(@RequestParam("userId") Long userId, @RequestParam("roleId") Long roleId) throws CommonException {
 
         return userRoleService.addRole(userId, roleId);
 
     }
+
     //remove role API
     @GetMapping("remove")
     public ApiReturn removeRole(@RequestParam("userId") Long userId, @RequestParam("roleId") Long roleId) throws CommonException {

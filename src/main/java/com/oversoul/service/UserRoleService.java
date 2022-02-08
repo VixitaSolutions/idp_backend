@@ -7,4 +7,6 @@ public interface UserRoleService {
     ApiReturn addRole(Long userId, Long roleId) throws CommonException;
 
     ApiReturn removeRole(Long userId, Long roleId) throws CommonException;
+
+    ApiReturn getRoles(Long roleId, Long userId);
 }
