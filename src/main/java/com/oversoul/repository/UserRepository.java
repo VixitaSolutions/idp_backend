@@ -29,8 +29,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsById(Long aLong);
 
     @Query(value = "select u from User u join  UserRole ur ON ur.userId=u.id where u.tenantId = :tenantId and ur.roleId.id = :roleId")
-    List<User> findByTenantIdAndRoleId_Id(UUID tenantId, Long roleId);
+    List<User> findByTenantIdAndRoleId_Id(@Param("tenantId") UUID tenantId, @Param("roleId") Long roleId);
 
     @Query(value = "select u from User u join  UserRole ur ON ur.userId=u.id where ur.roleId.id=:roleId")
-    List<User> findByRoleId_Id(Long roleId);
+    List<User> findByRoleId_Id(@Param("roleId") Long roleId);
 }
