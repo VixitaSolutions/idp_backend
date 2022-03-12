@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,7 +17,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("select u.id from User u where u.email = :email")
     Long findIdByEmail(@Param("email") String email);
-    
+
     @Query("select u from User u where u.email = :email and u.tenantId = (select t.id from TenantDetails t where t.clientName = :tenant)")
     User findIdByEmailAndTenant(@Param("email") String email, @Param("tenant") String tenant);
 
@@ -36,4 +37,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query(value = "select u from User u join  UserRole ur ON ur.userId=u.id where ur.roleId.id=:roleId")
     List<User> findByRoleId_Id(@Param("roleId") Long roleId);
+
+    @Query(value = "select u from User u join  UserRole ur ON ur.userId=u.id where u.tenantId = :tenantId")
+    List<User> findByTenantIdWithOutRole(@Param("tenantId") UUID tenantId);
+
+    @Query(value = "select u.id from User u  where u.tenantId = :tenantId")
+    List<Long> findIdByTenantId(@Param("tenantId") UUID tenantId);
+
+    List<User> findByIdNotInAndTenantId(Collection<Long> ids, UUID tenantId);
+
 }

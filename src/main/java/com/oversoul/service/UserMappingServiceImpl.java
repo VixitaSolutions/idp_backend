@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UserMappingServiceImpl implements UserMappingService {
@@ -50,10 +52,10 @@ public class UserMappingServiceImpl implements UserMappingService {
                 if (!userMappingRepo.existsByManagerIdAndCoachId(fromUserId, toUserId)) {
                     mapList.add(new UserMapping(fromUserId, toUserId, null, loggedInUserId));
                 } else {
-                	UserMapping um = userMappingRepo.findByManagerIdAndCoachId(fromUserId, toUserId);
-                	um.setActive(true);
-                	um.setDeLinkedBy(null);
-                	mapList.add(um);
+                    UserMapping um = userMappingRepo.findByManagerIdAndCoachId(fromUserId, toUserId);
+                    um.setActive(true);
+                    um.setDeLinkedBy(null);
+                    mapList.add(um);
                 }
             }
         } else if (userMapVo.getFromRoleId() == (Constants.MANAGER)
@@ -62,10 +64,10 @@ public class UserMappingServiceImpl implements UserMappingService {
                 if (!userMappingRepo.existsByManagerIdAndEmployeeId(fromUserId, toUserId)) {
                     mapList.add(new UserMapping(fromUserId, null, toUserId, loggedInUserId));
                 } else {
-                	UserMapping um = userMappingRepo.findByManagerIdAndCoachId(fromUserId, toUserId);
-                	um.setActive(true);
-                	um.setDeLinkedBy(null);
-                	mapList.add(um);
+                    UserMapping um = userMappingRepo.findByManagerIdAndCoachId(fromUserId, toUserId);
+                    um.setActive(true);
+                    um.setDeLinkedBy(null);
+                    mapList.add(um);
                 }
             }
         } else if (userMapVo.getFromRoleId() == (Constants.COACH) && userMapVo.getToRoleId() == (Constants.EMPLOYEE)) {
@@ -73,10 +75,10 @@ public class UserMappingServiceImpl implements UserMappingService {
                 if (!userMappingRepo.existsByCoachIdAndEmployeeId(fromUserId, toUserId)) {
                     mapList.add(new UserMapping(null, fromUserId, toUserId, loggedInUserId));
                 } else {
-                	UserMapping um = userMappingRepo.findByManagerIdAndCoachId(fromUserId, toUserId);
-                	um.setActive(true);
-                	um.setDeLinkedBy(null);
-                	mapList.add(um);
+                    UserMapping um = userMappingRepo.findByManagerIdAndCoachId(fromUserId, toUserId);
+                    um.setActive(true);
+                    um.setDeLinkedBy(null);
+                    mapList.add(um);
                 }
             }
         } else {
@@ -89,16 +91,16 @@ public class UserMappingServiceImpl implements UserMappingService {
 
     @Override
     public ApiReturn deLinkMapping(UserMapVo userMapVo) throws CommonException {
-    	Long loggedInUserId = Long.parseLong(MDC.get("userId"));
+        Long loggedInUserId = Long.parseLong(MDC.get("userId"));
 
         List<UserMapping> mapList = new ArrayList<>();
         Long fromUserId = userMapVo.getFromUserId();
         if (userMapVo.getFromRoleId() == (Constants.MANAGER) && userMapVo.getToRoleId() == (Constants.COACH)) {
             for (Long toUserId : userMapVo.getToUserId()) {
                 if (userMappingRepo.existsByManagerIdAndCoachId(fromUserId, toUserId)) {
-                	UserMapping um = userMappingRepo.findByManagerIdAndCoachId(fromUserId, toUserId);
-                	um.setActive(false);
-                	um.setDeLinkedBy(fromUserId);
+                    UserMapping um = userMappingRepo.findByManagerIdAndCoachId(fromUserId, toUserId);
+                    um.setActive(false);
+                    um.setDeLinkedBy(fromUserId);
                     mapList.add(um);
                 }
             }
@@ -106,9 +108,9 @@ public class UserMappingServiceImpl implements UserMappingService {
                 && userMapVo.getToRoleId() == (Constants.EMPLOYEE)) {
             for (Long toUserId : userMapVo.getToUserId()) {
                 if (userMappingRepo.existsByManagerIdAndEmployeeId(fromUserId, toUserId)) {
-                	UserMapping um = userMappingRepo.findByManagerIdAndCoachId(fromUserId, toUserId);
-                	um.setActive(false);
-                	um.setDeLinkedBy(fromUserId);
+                    UserMapping um = userMappingRepo.findByManagerIdAndCoachId(fromUserId, toUserId);
+                    um.setActive(false);
+                    um.setDeLinkedBy(fromUserId);
                     mapList.add(um);
                 }
             }
@@ -116,8 +118,8 @@ public class UserMappingServiceImpl implements UserMappingService {
             for (Long toUserId : userMapVo.getToUserId()) {
                 if (userMappingRepo.existsByCoachIdAndEmployeeId(fromUserId, toUserId)) {
                     UserMapping um = userMappingRepo.findByManagerIdAndCoachId(fromUserId, toUserId);
-                	um.setActive(false);
-                	um.setDeLinkedBy(fromUserId);
+                    um.setActive(false);
+                    um.setDeLinkedBy(fromUserId);
                     mapList.add(um);
                 }
             }
@@ -154,6 +156,14 @@ public class UserMappingServiceImpl implements UserMappingService {
                     userRepo.findByIdIn(employeeIds));
         }
         return new ApiReturn(HttpStatus.OK.value(), ApiConstants.Status.SUCCESS.name(), "User Not found");
+    }
+
+    @Override
+    public ApiReturn getUnAllocatedEmployees(UUID tenantId) throws CommonException {
+        List<Long> assignIds = userRoleRepo.findIdsByTenantId(tenantId);
+        Optional.ofNullable(assignIds).orElseThrow(()->new CommonException("Invalid Tenant or users not fount"));
+        return new ApiReturnWithResult(HttpStatus.OK.value(), ApiConstants.Status.SUCCESS.name(),
+                userRepo.findByIdNotInAndTenantId(assignIds, tenantId));
     }
 
 }

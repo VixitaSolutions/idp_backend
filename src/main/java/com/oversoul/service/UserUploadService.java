@@ -10,6 +10,6 @@ import com.oversoul.vo.ApiReturn;
 
 public interface UserUploadService {
 
-	ApiReturn processUserUpload(MultipartFile fileToUpload, long employeeTypeId, UUID tenantId) throws IOException, CommonException;
+	ApiReturn processUserUpload(MultipartFile fileToUpload, UUID tenantId) throws IOException, CommonException;
 
 }

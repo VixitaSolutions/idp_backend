@@ -48,21 +48,11 @@ public class UserUploadServiceImpl implements UserUploadService {
     }
 
     @Override
-    public ApiReturn processUserUpload(MultipartFile fileToUpload, long employeeTypeId, UUID tenantId)
+    public ApiReturn processUserUpload(MultipartFile fileToUpload, UUID tenantId)
             throws IOException, CommonException {
 
         if (!(Optional.ofNullable(fileToUpload).isPresent() && fileToUpload.getSize() != 0)) {
             throw new CommonException("Upload File should not empty");
-        }
-        if (employeeTypeId == 0 || tenantId == null) {
-            throw new CommonException("Employee Type and Tenant Details should not empty");
-        }
-        Role role;
-        if (!(employeeTypeId == Constants.COACH || employeeTypeId == Constants.EMPLOYEE
-                || employeeTypeId == Constants.MANAGER)) {
-            throw new CommonException("Invalid Employee Type");
-        } else {
-            role = roleRepository.findById(employeeTypeId).orElseThrow(() -> new CommonException("Invalid Role Details"));
         }
         TenantDetails tenantDetails = tenantDetailsRepo.findById(tenantId).orElseThrow(() -> new CommonException("Invalid Tenant Details"));
 
@@ -87,6 +77,7 @@ public class UserUploadServiceImpl implements UserUploadService {
             String phone = null;
             if (currentRow.getCell(0) != null && currentRow.getCell(0).getCellType() == CellType.STRING) {
                 firstName = currentRow.getCell(0).getStringCellValue().trim();
+                System.out.println(firstName);
             } else {
                 reason = "First Name Should not empty";
                 skipUpload = true;
@@ -119,11 +110,24 @@ public class UserUploadServiceImpl implements UserUploadService {
                     reason = reason != null ? reason + "/ Invalid Mobile Number" : "Invalid Mobile Number";
                     skipUpload = true;
                 }
+            }
+            Role role = null;
+            if (currentRow.getCell(4) != null && currentRow.getCell(4).getCellType() == CellType.STRING) {
+                String EmployeeType = currentRow.getCell(4).getStringCellValue().trim().toUpperCase();
+
+                if ((EmployeeType.equals(Constants.COACH) || EmployeeType.equals(Constants.EMPLOYEE)
+                        || EmployeeType.equals(Constants.MANAGER))) {
+                    role = roleRepository.findByName(EmployeeType);
+                } else {
+                    reason = reason != null ? reason + "/ Employee Type is invalid" : "Employee Type is invalid";
+                    skipUpload = true;
+                }
             } else {
-                reason = reason != null ? reason + "/ Mobile Number Should not empty"
-                        : "Mobile Number Should not empty";
+                reason = reason != null ? reason + "/ Employee Type should not empty" : "Employee Type should not empty";
                 skipUpload = true;
             }
+
+
             if (skipUpload) {
                 map.put(rowNo, reason);
             } else {
