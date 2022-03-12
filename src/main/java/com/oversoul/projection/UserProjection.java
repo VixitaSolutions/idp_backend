@@ -30,7 +30,7 @@ public interface UserProjection {
 
     public Boolean getActive();
 
-    public String getTenantName();
+    public String getClientName();
 
 
 }

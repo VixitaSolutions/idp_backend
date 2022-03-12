@@ -119,16 +119,12 @@ public class UserServiceImpl implements UserService {
     public ApiReturn getUserList(UserListReq userListReq) {
         List<UserProjection> userList = null;
         if (userListReq != null && userListReq.getTenantId() != null && userListReq.getRoleId() != null && userListReq.getRoleId() != 0) {
-            System.out.println("11111111111");
             userList = userRepo.findByTenantIdAndRoleId_Id(userListReq.getTenantId(), userListReq.getRoleId());
         } else if (userListReq != null && userListReq.getTenantId() != null) {
-            System.out.println("222222222");
             userList = userRepo.findByTenantId(userListReq.getTenantId());
         } else if (userListReq != null && userListReq.getRoleId() != null && userListReq.getRoleId() != 0) {
-            System.out.println("333333333");
             userList = userRepo.findByRoleId_Id(userListReq.getRoleId());
         } else {
-            System.out.println("final");
             userList = userRepo.findAllWithTenantName();
         }
 
