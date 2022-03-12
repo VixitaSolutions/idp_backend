@@ -5,11 +5,8 @@ import com.oversoul.entity.User;
 import com.oversoul.entity.UserMapping;
 import com.oversoul.entity.UserRole;
 import com.oversoul.exception.CommonException;
-import com.oversoul.repository.RoleRepository;
-import com.oversoul.repository.TenantDetailsRepository;
-import com.oversoul.repository.UserMappingRepository;
-import com.oversoul.repository.UserRepository;
-import com.oversoul.repository.UserRoleRepository;
+import com.oversoul.projection.UserProjection;
+import com.oversoul.repository.*;
 import com.oversoul.util.ApiConstants;
 import com.oversoul.vo.*;
 import org.slf4j.MDC;
@@ -29,7 +26,7 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepo;
 
     private final TenantDetailsRepository tenantDetailsRepo;
-    
+
     private final UserMappingRepository userMappingRepo;
 
     public UserServiceImpl(UserRepository userRepo, UserRoleRepository userRoleRepo, RoleRepository roleRepo,
@@ -50,7 +47,7 @@ public class UserServiceImpl implements UserService {
             UserRole userRole = userRoleRepo.findByUserId(user.getId());
             return new ApiReturnWithResult(HttpStatus.OK.value(), ApiConstants.Status.SUCCESS.name(),
                     new UserVo(user.getFirstName(), user.getLastName(), user.getUserName(),
-                    		user.getId(),
+                            user.getId(),
                             new RoleVo(userRole.getId(), userRole.getRoleId().getName())));
         }
 
@@ -63,15 +60,15 @@ public class UserServiceImpl implements UserService {
         if (!tenantDetailsRepo.existsById(userRequest.getTenantId())) {
             throw new CommonException("Invalid Tenant Details");
         }
-        
+
         User user = null;
         boolean isUpdateUser = false;
         if (userRequest.getId() != null) {
-        	Optional<User> userObj = userRepo.findById(userRequest.getId());
-        	if (userObj.isPresent()) {
-        		isUpdateUser = true;
-        		user = userObj.get();
-        	}
+            Optional<User> userObj = userRepo.findById(userRequest.getId());
+            if (userObj.isPresent()) {
+                isUpdateUser = true;
+                user = userObj.get();
+            }
         } else if (userRequest.getEmail().trim().length() == 0 || Boolean.TRUE
                 .equals(userRepo.existsByEmailAndTenantId(userRequest.getEmail(), userRequest.getTenantId()))) {
             throw new CommonException("Email already exists in the system");
@@ -84,11 +81,11 @@ public class UserServiceImpl implements UserService {
 
         }
         Long loggedInUserId = Long.parseLong(MDC.get("userId"));
-        
+
         if (user == null) {
-        	user = new User();
-        	user.setCreatedBy(loggedInUserId);
-        	user.setUserName(userRequest.getUserName());
+            user = new User();
+            user.setCreatedBy(loggedInUserId);
+            user.setUserName(userRequest.getUserName());
         }
         user.setEmail(userRequest.getEmail());
         user.setFirstName(userRequest.getFirstName());
@@ -98,19 +95,19 @@ public class UserServiceImpl implements UserService {
         user.setActive(userRequest.isActive());
         user = userRepo.save(user);
         if (isUpdateUser) {
-        	UserRole ur = userRoleRepo.findByUserId(user.getId());
-        	ur.setRoleId(role.get());
+            UserRole ur = userRoleRepo.findByUserId(user.getId());
+            ur.setRoleId(role.get());
             userRoleRepo.save(ur);
         } else {
-        	UserRole ur = new UserRole();
-        	ur.setRoleId(role.get());
+            UserRole ur = new UserRole();
+            ur.setRoleId(role.get());
             ur.setUserId(user.getId());
             userRoleRepo.save(ur);
         }
         UserMapping existingMapedUser = userMappingRepo.findByManagerIdAndCoachIdAndEmployeeId(userRequest.getManagerId(), userRequest.getCoachId(), user.getId());
         if (existingMapedUser == null) {
-        	userMappingRepo.save(new UserMapping(loggedInUserId, userRequest.getCoachId(), user.getId(), loggedInUserId));
-        }        
+            userMappingRepo.save(new UserMapping(loggedInUserId, userRequest.getCoachId(), user.getId(), loggedInUserId));
+        }
 
         return new ApiReturn(HttpStatus.CREATED.value(), ApiConstants.Status.SUCCESS.name(),
                 "User created Successfully");
@@ -120,15 +117,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ApiReturn getUserList(UserListReq userListReq) {
-        List<User> userList = null;
-        if (userListReq != null && userListReq.getTenantId() != null && userListReq.getRoleId() != null) {
+        List<UserProjection> userList = null;
+        if (userListReq != null && userListReq.getTenantId() != null && userListReq.getRoleId() != null && userListReq.getRoleId() != 0) {
+            System.out.println("11111111111");
             userList = userRepo.findByTenantIdAndRoleId_Id(userListReq.getTenantId(), userListReq.getRoleId());
         } else if (userListReq != null && userListReq.getTenantId() != null) {
+            System.out.println("222222222");
             userList = userRepo.findByTenantId(userListReq.getTenantId());
-        } else if (userListReq != null && userListReq.getRoleId() != null) {
+        } else if (userListReq != null && userListReq.getRoleId() != null && userListReq.getRoleId() != 0) {
+            System.out.println("333333333");
             userList = userRepo.findByRoleId_Id(userListReq.getRoleId());
         } else {
-            userList = userRepo.findAll();
+            System.out.println("final");
+            userList = userRepo.findAllWithTenantName();
         }
 
         return new ApiReturnWithResult(HttpStatus.OK.value(), ApiConstants.Status.SUCCESS.name(),
