@@ -17,6 +17,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class UserRequest {
 
+	
+	private Long id;
 	private String firstName;
 	private String lastName;
 	private String userName;
@@ -26,5 +28,8 @@ public class UserRequest {
 	private String mobile;
 	@Nonnull
 	private UUID tenantId;
+	private boolean active=true;
+	private Long coachId;
+	private Long managerId;
 
 }

@@ -65,6 +65,8 @@ public class AjaxAuthenticationProvider implements AuthenticationProvider {
 				String password = (String) userAuthentication.getCredentials();
 				String authId = (String) userAuthentication.getAuthId();
 				LoginType loginType = (LoginType) userAuthentication.getLoginType();
+				String tenant = (String) userAuthentication.getTenant();
+				userAuthentication.getTenant();
 
 				UserRole userRoles = null;
 				String loggedUser = null;
@@ -75,11 +77,15 @@ public class AjaxAuthenticationProvider implements AuthenticationProvider {
 				if (username==null){
 					throw new BadCredentialsException("UserName Type required");
 				}
+				if (tenant == null) {
+					throw new BadCredentialsException("Tenant required");
+				}
 				System.out.println("auth id ==== " + authId);
 				// User user =
 				// userRepository.findByEmail(EncryptionDecryptionAES.encrypt(username.trim().toLowerCase()));
 
-				User user = userRepository.findByEmail(username.trim().toLowerCase());
+//				User user = userRepository.findByEmail(username.trim().toLowerCase());
+				User user = userRepository.findIdByEmailAndTenant(username.trim().toLowerCase(), tenant.trim().toLowerCase());
 				/*
 				 * if login type is by username means it will load the login details validate
 				 * the password for given username
@@ -127,7 +133,7 @@ public class AjaxAuthenticationProvider implements AuthenticationProvider {
 				List<GrantedAuthority> authorities = roleString.stream()
 						.map(SimpleGrantedAuthority::new).collect(Collectors.toList());
 
-				userContext = UserContext.createContext(loggedUser, user.getId().toString(), loginType, authorities);
+				userContext = UserContext.createContext(loggedUser, user.getId().toString(), loginType, authorities, user.getTenantId());
 
 				return new UsernamePasswordAuthenticationToken(userContext, null, userContext.getAuthorities());
 			}

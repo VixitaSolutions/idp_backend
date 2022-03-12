@@ -113,7 +113,7 @@ public class RefreshTokenEndpoint {
 			List<GrantedAuthority> authorities = roleString.stream()
 					.map(authority -> new SimpleGrantedAuthority(authority)).collect(Collectors.toList());
 
-			userContext = UserContext.create(loggedUser, user.get().getId().toString(), null, authorities);
+			userContext = UserContext.create(loggedUser, user.get().getId().toString(), null, authorities, null);
 
 			return new ApiReturnWithResult(HttpStatus.OK.value(),
 					messageSource.getMessage("tokenProvided", null, request.getLocale()),

@@ -16,6 +16,7 @@ public class UserVo {
 	private String firstName;
 	private String lastName;
 	private String userName;
+	private Long userId;
 	private RoleVo role;
 
 }

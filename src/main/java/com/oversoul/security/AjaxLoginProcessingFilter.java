@@ -78,7 +78,7 @@ public class AjaxLoginProcessingFilter extends AbstractAuthenticationProcessingF
 
                 }
                 token = new UsernamePasswordAuthentication(loginRequest.getUsername(), loginRequest.getPassword(),
-                        loginRequest.getLoginType());
+                        loginRequest.getLoginType(), loginRequest.getTenant());
             } else {
                 throw new AuthenticationServiceException(messageSource.getMessage("loginTypeNotMatched", null, null));
             }

@@ -48,6 +48,7 @@ public class UserMapping {
 
 	private Long deLinkedBy;
 
+	@UpdateTimestamp
 	private Date deLinkedOn;
 
 	public UserMapping(Long managerId, Long coachId, Long employeeId, Long mappedBy) {
@@ -56,6 +57,14 @@ public class UserMapping {
 		this.coachId = coachId;
 		this.employeeId = employeeId;
 		this.mappedBy = mappedBy;
+	}
+	public UserMapping(Long managerId, Long coachId, Long employeeId, Long deLinkedBy, boolean active) {
+		super();
+		this.managerId = managerId;
+		this.coachId = coachId;
+		this.employeeId = employeeId;
+		this.deLinkedBy = deLinkedBy;
+		this.active = active;
 	}
 
 }

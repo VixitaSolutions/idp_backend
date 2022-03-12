@@ -2,10 +2,12 @@ package com.oversoul.service;
 
 import com.oversoul.entity.Role;
 import com.oversoul.entity.User;
+import com.oversoul.entity.UserMapping;
 import com.oversoul.entity.UserRole;
 import com.oversoul.exception.CommonException;
 import com.oversoul.repository.RoleRepository;
 import com.oversoul.repository.TenantDetailsRepository;
+import com.oversoul.repository.UserMappingRepository;
 import com.oversoul.repository.UserRepository;
 import com.oversoul.repository.UserRoleRepository;
 import com.oversoul.util.ApiConstants;
@@ -27,13 +29,16 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepo;
 
     private final TenantDetailsRepository tenantDetailsRepo;
+    
+    private final UserMappingRepository userMappingRepo;
 
     public UserServiceImpl(UserRepository userRepo, UserRoleRepository userRoleRepo, RoleRepository roleRepo,
-                           TenantDetailsRepository tenantDetailsRepo) {
+                           TenantDetailsRepository tenantDetailsRepo, UserMappingRepository userMappingRepo) {
         this.userRepo = userRepo;
         this.userRoleRepo = userRoleRepo;
         this.roleRepo = roleRepo;
         this.tenantDetailsRepo = tenantDetailsRepo;
+        this.userMappingRepo = userMappingRepo;
     }
 
     @Override
@@ -45,6 +50,7 @@ public class UserServiceImpl implements UserService {
             UserRole userRole = userRoleRepo.findByUserId(user.getId());
             return new ApiReturnWithResult(HttpStatus.OK.value(), ApiConstants.Status.SUCCESS.name(),
                     new UserVo(user.getFirstName(), user.getLastName(), user.getUserName(),
+                    		user.getId(),
                             new RoleVo(userRole.getId(), userRole.getRoleId().getName())));
         }
 
@@ -56,9 +62,17 @@ public class UserServiceImpl implements UserService {
     public ApiReturn createUser(UserRequest userRequest) throws CommonException {
         if (!tenantDetailsRepo.existsById(userRequest.getTenantId())) {
             throw new CommonException("Invalid Tenant Details");
-
         }
-        if (userRequest.getEmail().trim().length() == 0 || Boolean.TRUE
+        
+        User user = null;
+        boolean isUpdateUser = false;
+        if (userRequest.getId() != null) {
+        	Optional<User> userObj = userRepo.findById(userRequest.getId());
+        	if (userObj.isPresent()) {
+        		isUpdateUser = true;
+        		user = userObj.get();
+        	}
+        } else if (userRequest.getEmail().trim().length() == 0 || Boolean.TRUE
                 .equals(userRepo.existsByEmailAndTenantId(userRequest.getEmail(), userRequest.getTenantId()))) {
             throw new CommonException("Email already exists in the system");
         }
@@ -70,20 +84,33 @@ public class UserServiceImpl implements UserService {
 
         }
         Long loggedInUserId = Long.parseLong(MDC.get("userId"));
-        User user = new User();
-        user.setCreatedBy(loggedInUserId);
+        
+        if (user == null) {
+        	user = new User();
+        	user.setCreatedBy(loggedInUserId);
+        	user.setUserName(userRequest.getUserName());
+        }
         user.setEmail(userRequest.getEmail());
         user.setFirstName(userRequest.getFirstName());
         user.setLastName(userRequest.getLastName());
-        user.setUserName(userRequest.getUserName());
         user.setMobile(userRequest.getMobile());
         user.setTenantId(userRequest.getTenantId());
+        user.setActive(userRequest.isActive());
         user = userRepo.save(user);
-
-        UserRole ur = new UserRole();
-        ur.setRoleId(role.get());
-        ur.setUserId(user.getId());
-        userRoleRepo.save(ur);
+        if (isUpdateUser) {
+        	UserRole ur = userRoleRepo.findByUserId(user.getId());
+        	ur.setRoleId(role.get());
+            userRoleRepo.save(ur);
+        } else {
+        	UserRole ur = new UserRole();
+        	ur.setRoleId(role.get());
+            ur.setUserId(user.getId());
+            userRoleRepo.save(ur);
+        }
+        UserMapping existingMapedUser = userMappingRepo.findByManagerIdAndCoachIdAndEmployeeId(userRequest.getManagerId(), userRequest.getCoachId(), user.getId());
+        if (existingMapedUser == null) {
+        	userMappingRepo.save(new UserMapping(loggedInUserId, userRequest.getCoachId(), user.getId(), loggedInUserId));
+        }        
 
         return new ApiReturn(HttpStatus.CREATED.value(), ApiConstants.Status.SUCCESS.name(),
                 "User created Successfully");

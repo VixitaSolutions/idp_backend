@@ -67,7 +67,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         List<String> scopes = jwsClaims.getBody().get("scopes", List.class);
         List<GrantedAuthority> authorities = scopes.stream().map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
-        UserContext context = UserContext.createContext(null, subject, null, authorities);
+        UserContext context = UserContext.createContext(null, subject, null, authorities, null);
 
         jwtAuthenticationToken = new JwtAuthenticationToken(context, context.getAuthorities());
         return jwtAuthenticationToken;

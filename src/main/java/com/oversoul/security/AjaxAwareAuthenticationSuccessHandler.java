@@ -105,6 +105,7 @@ public class AjaxAwareAuthenticationSuccessHandler implements AuthenticationSucc
                     userRepository.save(user2);
                     UserRole userRole = userRoleRepository.findByUserId(user.get().getId());
                     tokens.setRoleIds(userRole.getRoleId().getId());
+                    tokens.setTenantId(user2.getTenantId());
                     log.info("User with Id : " + userContext.getUserId() + " logged in! and token :: "
                             + accessToken.getToken() + "  ::::::::: Refresh Token ::::: " + refreshToken.getToken());
                     tokenMap.put("data", tokens);

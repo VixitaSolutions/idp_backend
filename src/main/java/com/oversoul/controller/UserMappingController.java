@@ -32,7 +32,7 @@ public class UserMappingController {
 	}
 
 	@PutMapping("deLink")
-	public ApiReturn deLinkMapping(@RequestBody UserMapVo userMapVo) {
+	public ApiReturn deLinkMapping(@RequestBody UserMapVo userMapVo) throws CommonException {
 		return userMappingService.deLinkMapping(userMapVo);
 	}
 

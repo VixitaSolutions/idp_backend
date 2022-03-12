@@ -1,5 +1,7 @@
 package com.oversoul.security.model;
 
+import java.util.UUID;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -28,5 +30,7 @@ public class Tokens {
 	private boolean isPwdExpiry;
 
 	private Long roleIds;
+	
+	private UUID tenantId;
 
 }

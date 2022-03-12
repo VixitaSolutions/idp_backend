@@ -25,14 +25,17 @@ public class LoginRequest {
 	private String firstName;
 	private String lastName;
 	private String accessToken;
+	private String tenant;
 
 	@JsonCreator
 	public LoginRequest(@JsonProperty("username") String username, @JsonProperty("password") String password,
-			@JsonProperty("loginType") LoginType loginType, @JsonProperty("at") String accessToken) {
+			@JsonProperty("loginType") LoginType loginType, @JsonProperty("at") String accessToken,
+			@JsonProperty("tenant") String tenant) {
 		this.username = username;
 		this.password = password;
 		this.loginType = loginType;
 		this.accessToken = accessToken;
+		this.tenant = tenant;
 	}
 
 }
