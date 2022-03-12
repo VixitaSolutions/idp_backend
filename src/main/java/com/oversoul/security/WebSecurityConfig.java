@@ -32,6 +32,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	public static final String TOKEN_REFRESH_ENTRY_POINT = "/api/v1/login/**";
 
+	public static final String TENANTS_ENDPOINT = "/api/v1/tenant/get";
+
 	@Autowired
 	private RestAuthenticationEntryPoint authenticationEntryPoint;
 
@@ -64,7 +66,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	protected JwtTokenAuthenticationProcessingFilter buildJwtTokenAuthenticationProcessingFilter() {
-		List<String> pathsToSkip = Arrays.asList(TOKEN_REFRESH_ENTRY_POINT);
+		List<String> pathsToSkip = Arrays.asList(TOKEN_REFRESH_ENTRY_POINT,TENANTS_ENDPOINT);
 		SkipPathRequestMatcher matcher = new SkipPathRequestMatcher(pathsToSkip, TOKEN_BASED_AUTH_ENTRY_POINT);
 		JwtTokenAuthenticationProcessingFilter filter = new JwtTokenAuthenticationProcessingFilter(failureHandler,
 				tokenExtractor, matcher);
@@ -92,6 +94,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
 				.and().authorizeRequests().antMatchers(FORM_BASED_LOGIN_ENTRY_POINT).permitAll()// Login
+				.and().authorizeRequests().antMatchers(TENANTS_ENDPOINT).permitAll()
 				.antMatchers(TOKEN_REFRESH_ENTRY_POINT).permitAll().and().authorizeRequests()
 				.antMatchers(TOKEN_BASED_AUTH_ENTRY_POINT).authenticated() // Protected
 				// API
