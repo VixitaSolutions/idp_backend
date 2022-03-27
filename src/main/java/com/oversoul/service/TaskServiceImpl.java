@@ -1,27 +1,20 @@
 package com.oversoul.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
+import com.oversoul.entity.*;
+import com.oversoul.enums.TaskStatus;
+import com.oversoul.exception.CommonException;
+import com.oversoul.repository.*;
+import com.oversoul.util.ApiConstants;
+import com.oversoul.util.Constants;
+import com.oversoul.vo.ApiReturn;
+import com.oversoul.vo.EmployeeTaskReq;
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import com.oversoul.entity.ClientCompetency;
-import com.oversoul.entity.EmployeeTaskDetails;
-import com.oversoul.entity.EmployeeTaskHistory;
-import com.oversoul.entity.User;
-import com.oversoul.enums.TaskStatus;
-import com.oversoul.exception.CommonException;
-import com.oversoul.repository.CompetencyRepository;
-import com.oversoul.repository.CourseRepository;
-import com.oversoul.repository.EmployeeTaskDetailsRepository;
-import com.oversoul.repository.EmployeeTaskHistoryRepository;
-import com.oversoul.repository.UserRepository;
-import com.oversoul.util.ApiConstants;
-import com.oversoul.vo.ApiReturn;
-import com.oversoul.vo.EmployeeTaskReq;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TaskServiceImpl implements TaskService {
@@ -31,19 +24,28 @@ public class TaskServiceImpl implements TaskService {
     private final EmployeeTaskHistoryRepository employeeTaskHistoryRepo;
 
     private final CourseRepository courseRepo;
-    
-    private final CompetencyRepository competencyRepo;
+
+    private final ClientCompetencyRepository clientCompetencyRepo;
 
     private final UserRepository userRepo;
 
+    private final UserMappingRepository userMappingRepo;
+
+    private final UserRoleRepository userRoleRepo;
+
+    private final RoleRepository roleRepo;
+
     public TaskServiceImpl(EmployeeTaskDetailsRepository employeeTaskDetailsRepo,
                            EmployeeTaskHistoryRepository employeeTaskHistoryRepo, CourseRepository courseRepo,
-                           UserRepository userRepo, CompetencyRepository competencyRepo) {
+                           UserRepository userRepo, ClientCompetencyRepository clientCompetencyRepo, UserMappingRepository userMappingRepo, UserRoleRepository userRoleRepo, RoleRepository roleRepo) {
         this.employeeTaskDetailsRepo = employeeTaskDetailsRepo;
         this.employeeTaskHistoryRepo = employeeTaskHistoryRepo;
         this.userRepo = userRepo;
         this.courseRepo = courseRepo;
-        this.competencyRepo = competencyRepo;
+        this.clientCompetencyRepo = clientCompetencyRepo;
+        this.userMappingRepo = userMappingRepo;
+        this.userRoleRepo = userRoleRepo;
+        this.roleRepo = roleRepo;
     }
 
     @Override
@@ -52,17 +54,17 @@ public class TaskServiceImpl implements TaskService {
         Long loggedInUserId = Long.parseLong(MDC.get("userId"));
 
 //        Course course = courseRepo.findByIdAndActive(taskReq.getCourseId(), true);
-        Optional<ClientCompetency> competency = competencyRepo.findById(taskReq.getCompetencyId());
+        Optional<ClientCompetency> competency = clientCompetencyRepo.findById(taskReq.getCompetencyId());
         if (!competency.isPresent()) {
             throw new CommonException("Invalid Course Details");
         }
         User employeeId = userRepo.findById(taskReq.getEmployeeId()).orElseThrow(() -> new CommonException("Invalid Employee Details"));
         List<TaskStatus> statusList = new ArrayList<TaskStatus>();
         statusList.add(TaskStatus.OPEN);
-        statusList.add(TaskStatus.ACCEPETED);
-        statusList.add(TaskStatus.INPROGRESS);
+        statusList.add(TaskStatus.ACCEPTED);
+        statusList.add(TaskStatus.IN_PROGRESS);
         statusList.add(TaskStatus.COMPLETED);
-        if (!employeeTaskDetailsRepo.existsByEmployeeIdAndCompetencyAndTaskStatusIn(employeeId, competency.get(), statusList)) {
+        if (!employeeTaskDetailsRepo.existsByEmployeeId_IdAndCompetencyAndTaskStatusIn(employeeId, competency.get(), statusList)) {
             EmployeeTaskDetails task = new EmployeeTaskDetails();
             task.setCompetency(competency.get());
             task.setCreatedBy(loggedInUserId);
@@ -107,16 +109,16 @@ public class TaskServiceImpl implements TaskService {
             throws CommonException {
 
         if (employeeId != null && employeeId != 0 && taskStatus != null && competencyId != null && competencyId != 0) {
-            return employeeTaskDetailsRepo.findByEmployeeIdAndCompetencyAndTaskStatus(employeeId, competencyId,
+            return employeeTaskDetailsRepo.findByEmployeeId_IdAndCompetencyAndTaskStatus(employeeId, competencyId,
                     taskStatus);
         } else if (employeeId != null && employeeId != 0 && taskStatus != null) {
-            return employeeTaskDetailsRepo.findByEmployeeIdAndTaskStatus(employeeId, taskStatus);
+            return employeeTaskDetailsRepo.findByEmployeeId_IdAndTaskStatus(employeeId, taskStatus);
         } else if (employeeId != null && employeeId != 0 && competencyId != null && competencyId != 0) {
-            return employeeTaskDetailsRepo.findByEmployeeIdAndCompetency(employeeId, competencyId);
+            return employeeTaskDetailsRepo.findByEmployeeId_IdAndCompetency(employeeId, competencyId);
         } else if (taskStatus != null && competencyId != null && competencyId != 0) {
             return employeeTaskDetailsRepo.findByCompetencyAndTaskStatus(competencyId, taskStatus);
         } else if (employeeId != null && employeeId != 0) {
-            return employeeTaskDetailsRepo.findByEmployeeId(employeeId);
+            return employeeTaskDetailsRepo.findByEmployeeId_Id(employeeId);
         } else if (taskStatus != null) {
             return employeeTaskDetailsRepo.findByTaskStatus(taskStatus);
         } else if (competencyId != null && competencyId != 0) {
@@ -125,6 +127,27 @@ public class TaskServiceImpl implements TaskService {
             throw new CommonException("please provide least one filter");
         }
 
+    }
+
+    @Override
+    public List<EmployeeTaskDetails> getAllocatedTasksByCoachId(Long coachId, TaskStatus taskStatus, Long competencyId) throws CommonException {
+
+        Role role = roleRepo.findById(Long.valueOf(Constants.COACH)).orElseThrow(() -> new CommonException("Role Not Found"));
+        if (userRoleRepo.existsByUserIdAndRoleId(coachId, role)) {
+            List<Long> employeeIds = userMappingRepo.findEmployeeIdByCoachId(coachId);
+            Optional.ofNullable(employeeIds).orElseThrow(() -> new CommonException("Employees Not Found"));
+            if (taskStatus != null && competencyId != null && competencyId != 0) {
+                return employeeTaskDetailsRepo.findByEmployeeId_IdInAndCompetencyAndTaskStatus(employeeIds, competencyId,
+                        taskStatus);
+            } else if (taskStatus != null) {
+                return employeeTaskDetailsRepo.findByEmployeeId_IdInAndTaskStatus(employeeIds, taskStatus);
+            } else if (competencyId != null && competencyId != 0) {
+                return employeeTaskDetailsRepo.findByEmployeeId_IdInAndCompetency(employeeIds, competencyId);
+            } else {
+                return employeeTaskDetailsRepo.findByEmployeeId_IdIn(employeeIds);
+            }
+        }
+        throw new CommonException("User Not Found with given Details");
     }
 
 }

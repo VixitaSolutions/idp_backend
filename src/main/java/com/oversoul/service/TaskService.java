@@ -16,4 +16,5 @@ public interface TaskService {
 
     List<EmployeeTaskDetails> getAllocatedTasks(Long employeeId, TaskStatus taskStatus, Long courseType) throws CommonException;
 
+    List<EmployeeTaskDetails> getAllocatedTasksByCoachId(Long coachId, TaskStatus taskStatus, Long courseType) throws CommonException;
 }

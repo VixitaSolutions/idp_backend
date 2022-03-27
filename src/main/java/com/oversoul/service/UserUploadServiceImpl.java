@@ -10,6 +10,7 @@ import com.oversoul.repository.TenantDetailsRepository;
 import com.oversoul.repository.UserRepository;
 import com.oversoul.repository.UserRoleRepository;
 import com.oversoul.util.ApiConstants;
+import com.oversoul.util.CommonUtils;
 import com.oversoul.util.Constants;
 import com.oversoul.vo.ApiReturn;
 import com.oversoul.vo.ApiReturnWithResult;
@@ -56,7 +57,7 @@ public class UserUploadServiceImpl implements UserUploadService {
         }
         TenantDetails tenantDetails = tenantDetailsRepo.findById(tenantId).orElseThrow(() -> new CommonException("Invalid Tenant Details"));
 
-        XSSFSheet spreadsheet = convertCsvToXlsx(fileToUpload).getSheet("sheet1");
+        XSSFSheet spreadsheet = CommonUtils.convertCsvToXlsx(fileToUpload).getSheet("sheet1");
         XSSFRow currentRow = null;
 
         if (spreadsheet.getLastRowNum() < 1) {
@@ -153,27 +154,5 @@ public class UserUploadServiceImpl implements UserUploadService {
         return new ApiReturnWithResult(HttpStatus.OK.value(), ApiConstants.Status.SUCCESS.name(), uploadInfo);
     }
 
-    private XSSFWorkbook convertCsvToXlsx(MultipartFile fileToUpload) throws IOException {
 
-        try (XSSFWorkbook workBook = new XSSFWorkbook()) {
-            XSSFSheet sheet = workBook.createSheet("sheet1");
-            String currentLine = null;
-            int rowNum = 0;
-            BufferedReader br = new BufferedReader(new InputStreamReader(fileToUpload.getInputStream()));
-            while ((currentLine = br.readLine()) != null) {
-                String[] str = currentLine.split(",");
-                XSSFRow currentRow = sheet.createRow(rowNum);
-                for (int i = 0; i < str.length; i++) {
-                    currentRow.createCell(i).setCellValue(str[i]);
-                }
-                rowNum++;
-            }
-            br.close();
-            final File file = new File(System.getProperty("java.io.tmpdir"), fileToUpload.getOriginalFilename() + ".xlsx");
-            FileOutputStream fileOutputStream = new FileOutputStream(file);
-            workBook.write(fileOutputStream);
-            fileOutputStream.close();
-            return workBook;
-        }
-    }
 }
