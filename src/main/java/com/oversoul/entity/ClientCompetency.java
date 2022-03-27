@@ -1,19 +1,19 @@
 package com.oversoul.entity;
 
 import java.util.Date;
+import java.util.UUID;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
-
-import com.oversoul.enums.TaskStatus;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,33 +27,33 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class EmployeeTaskDetails {
-
+public class ClientCompetency {
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-
-	@ManyToOne
-	private User employeeId;
-
-	@ManyToOne
-	private ClientCompetency competency;
-
-	private String taskName;
-
-	private Long duration;
-
-	private String taskDescription;
-
-	private Long createdBy;
-
+	
+	private String name;
+	
+	private Long level;
+	
+	private String description;
+	
+	private String keywords;
+	
 	@CreationTimestamp
 	private Date createdOn;
 
 	@UpdateTimestamp
 	private Date updatedOn;
 
-	@Enumerated(EnumType.STRING)
-	private TaskStatus taskStatus;
+	private Long createdBy;
+
+	@Column(length = 50)
+	@Type(type = "uuid-char")
+	private UUID tenantId;
+	
+	@ManyToOne
+	private Competency globalCompetency;
 
 }

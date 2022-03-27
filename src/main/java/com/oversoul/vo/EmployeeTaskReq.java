@@ -19,7 +19,7 @@ public class EmployeeTaskReq {
 
 	private Long employeeId;
 
-	private Long courseId;
+	private Long competencyId;
 
 	private String taskName;
 
