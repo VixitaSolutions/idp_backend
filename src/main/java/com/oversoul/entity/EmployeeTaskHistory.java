@@ -2,6 +2,7 @@ package com.oversoul.entity;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -32,8 +33,15 @@ public class EmployeeTaskHistory {
 	private TaskStatus status;
 
 	private Date createdOn;
+	
+	@Column(length = 500)
+	private String taskDescription;
 
-	private String comment;
+	@Column(length = 500)
+	private String empcomments;
+	
+	@Column(length = 500)
+	private String coachComments;
 
 	private Long commentedBy;
 

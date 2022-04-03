@@ -12,19 +12,19 @@ import com.oversoul.enums.TaskStatus;
 
 public interface EmployeeTaskDetailsRepository extends JpaRepository<EmployeeTaskDetails, Long> {
 
-    boolean existsByEmployeeId_IdAndCompetencyAndTaskStatusIn(User employeeId, ClientCompetency competencyId,
+    boolean existsByEmployee_IdAndCompetencyAndTaskStatusIn(Long employeeId, ClientCompetency competencyId,
                                                            List<TaskStatus> statusList);
 
-    List<EmployeeTaskDetails> findByEmployeeId_Id(long employeeId);
+    List<EmployeeTaskDetails> findByEmployee_Id(long employeeId);
 
-    List<EmployeeTaskDetails> findByEmployeeId_IdAndCompetencyAndTaskStatus(Long employeeId, Long competencyId,
+    List<EmployeeTaskDetails> findByEmployee_IdAndCompetencyAndTaskStatus(Long employeeId, Long competencyId,
                                                                          TaskStatus taskStatus);
 
-    List<EmployeeTaskDetails> findByEmployeeId_IdAndTaskStatus(Long employeeId, TaskStatus taskStatus);
+    List<EmployeeTaskDetails> findByEmployee_IdAndTaskStatus(Long employeeId, TaskStatus taskStatus);
 
-    List<EmployeeTaskDetails> findByEmployeeId_IdInAndTaskStatus(Collection<Long> ids, TaskStatus taskStatus);
+    List<EmployeeTaskDetails> findByEmployee_IdInAndTaskStatus(Collection<Long> ids, TaskStatus taskStatus);
 
-    List<EmployeeTaskDetails> findByEmployeeId_IdAndCompetency(Long employeeId, Long courseType);
+    List<EmployeeTaskDetails> findByEmployee_IdAndCompetency(Long employeeId, Long courseType);
 
     List<EmployeeTaskDetails> findByCompetencyAndTaskStatus(Long competencyId, TaskStatus taskStatus);
 
@@ -32,9 +32,9 @@ public interface EmployeeTaskDetailsRepository extends JpaRepository<EmployeeTas
 
     List<EmployeeTaskDetails> findByCompetency(Long competencyId);
 
-    List<EmployeeTaskDetails> findByEmployeeId_IdInAndCompetencyAndTaskStatus(List<Long> employeeIds, Long competencyId, TaskStatus taskStatus);
+    List<EmployeeTaskDetails> findByEmployee_IdInAndCompetencyAndTaskStatus(List<Long> employeeIds, Long competencyId, TaskStatus taskStatus);
 
-    List<EmployeeTaskDetails> findByEmployeeId_IdInAndCompetency(List<Long> employeeIds, Long competencyId);
+    List<EmployeeTaskDetails> findByEmployee_IdInAndCompetency(List<Long> employeeIds, Long competencyId);
 
-    List<EmployeeTaskDetails> findByEmployeeId_IdIn(List<Long> employeeIds);
+    List<EmployeeTaskDetails> findByEmployee_IdIn(List<Long> employeeIds);
 }

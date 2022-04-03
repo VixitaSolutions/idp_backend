@@ -15,7 +15,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class EmployeeTaskReq {
 
-	private Long taskId;
+	private Long id;
 
 	private Long employeeId;
 
@@ -28,5 +28,9 @@ public class EmployeeTaskReq {
 	private Long duration;
 
 	private TaskStatus taskStatus;
+	
+	private String empComments;
+	
+	private String coachComments;
 
 }

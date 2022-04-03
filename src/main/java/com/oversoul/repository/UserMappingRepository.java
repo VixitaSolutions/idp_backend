@@ -18,7 +18,7 @@ public interface UserMappingRepository extends JpaRepository<UserMapping, Long> 
 
 	boolean existsByCoachIdAndEmployeeId(Long fromUserId, Long toUserId);
 
-	@Query("select um.employeeId from UserMapping um where um.managerId=null and um.coachId = :coachId and active = true")
+	@Query("select um.employeeId from UserMapping um where um.coachId = :coachId and active = true")
 	List<Long> findEmployeeIdByCoachId(@Param("coachId") Long coachId);
 
 	@Query("select um.coachId from UserMapping um where um.managerId = :managerId and um.employeeId=null and active = true")
