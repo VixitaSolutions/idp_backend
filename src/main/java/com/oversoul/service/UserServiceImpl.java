@@ -2,17 +2,18 @@ package com.oversoul.service;
 
 import com.oversoul.entity.Role;
 import com.oversoul.entity.User;
-import com.oversoul.entity.UserMapping;
 import com.oversoul.entity.UserRole;
 import com.oversoul.exception.CommonException;
 import com.oversoul.projection.UserProjection;
 import com.oversoul.repository.*;
 import com.oversoul.util.ApiConstants;
+import com.oversoul.util.Constants;
 import com.oversoul.vo.*;
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,13 +30,16 @@ public class UserServiceImpl implements UserService {
 
     private final UserMappingRepository userMappingRepo;
 
+    private final UserMappingService userMappingService;
+
     public UserServiceImpl(UserRepository userRepo, UserRoleRepository userRoleRepo, RoleRepository roleRepo,
-                           TenantDetailsRepository tenantDetailsRepo, UserMappingRepository userMappingRepo) {
+                           TenantDetailsRepository tenantDetailsRepo, UserMappingRepository userMappingRepo, UserMappingService userMappingService) {
         this.userRepo = userRepo;
         this.userRoleRepo = userRoleRepo;
         this.roleRepo = roleRepo;
         this.tenantDetailsRepo = tenantDetailsRepo;
         this.userMappingRepo = userMappingRepo;
+        this.userMappingService = userMappingService;
     }
 
     @Override
@@ -104,10 +108,20 @@ public class UserServiceImpl implements UserService {
             ur.setUserId(user.getId());
             userRoleRepo.save(ur);
         }
-        UserMapping existingMapedUser = userMappingRepo.findByManagerIdAndCoachIdAndEmployeeId(userRequest.getManagerId(), userRequest.getCoachId(), user.getId());
-        if (existingMapedUser == null) {
-            userMappingRepo.save(new UserMapping(loggedInUserId, userRequest.getCoachId(), user.getId(), loggedInUserId));
-        }
+
+
+        UserMapVo map = new UserMapVo();
+        map.setFromUserId(userRequest.getCoachId());
+        List<Long> employeeIds = new ArrayList<>();
+        employeeIds.add(user.getId());
+        map.setToUserId(employeeIds);
+        map.setFromRoleId((long) Constants.COACH);
+        map.setToRoleId((long) Constants.EMPLOYEE);
+        userMappingService.userMapping(map);
+//        UserMapping existingMapedUser = userMappingRepo.findByManagerIdAndCoachIdAndEmployeeId(userRequest.getManagerId(), userRequest.getCoachId(), user.getId());
+//        if (existingMapedUser == null) {
+//            userMappingRepo.save(new UserMapping(loggedInUserId, userRequest.getCoachId(), user.getId(), loggedInUserId));
+//        }
 
         return new ApiReturn(HttpStatus.CREATED.value(), ApiConstants.Status.SUCCESS.name(),
                 "User created Successfully");
@@ -139,6 +153,25 @@ public class UserServiceImpl implements UserService {
         userRepo.save(user);
         return new ApiReturn(HttpStatus.OK.value(), ApiConstants.Status.SUCCESS.name(),
                 "User Status Updated");
+    }
+
+    @Override
+    public ApiReturn getAssignedUserDetails(Long userId) throws CommonException {
+        UserRole userRole = userRoleRepo.findByUserId(userId);
+        Optional.ofNullable(userRole).orElseThrow(() -> new CommonException("No role assigned"));
+        UserDetails userDetails = new UserDetails();
+        Long coachId = null;
+        Long managerId = null;
+        if (userRole.getRoleId().getId() == Constants.EMPLOYEE) {
+            coachId = userMappingRepo.findByEmployeeIdAndManagerIdIsNull(userId);
+            managerId = userMappingRepo.findByCoachIdAndEmployeeIdIsNull(coachId);
+        } else if (userRole.getRoleId().getId() == Constants.COACH) {
+            managerId = userMappingRepo.findByCoachIdAndEmployeeIdIsNull(userId);
+        }
+        userDetails.setAssignedCoachId(coachId);
+        userDetails.setAssignedManagerId(managerId);
+        return new ApiReturnWithResult(HttpStatus.OK.value(), ApiConstants.Status.SUCCESS.name(),
+                userDetails);
     }
 
 }

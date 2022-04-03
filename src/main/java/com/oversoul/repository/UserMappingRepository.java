@@ -23,6 +23,12 @@ public interface UserMappingRepository extends JpaRepository<UserMapping, Long> 
 
 	@Query("select um.coachId from UserMapping um where um.managerId = :managerId and um.employeeId=null and active = true")
 	List<Long> findCoachIdByManagerId(@Param("managerId") Long managerId);
+
+	@Query("select u.coachId from UserMapping u where u.employeeId = ?1 and u.managerId is null")
+	Long findByEmployeeIdAndManagerIdIsNull(Long employeeId);
+
+	@Query("select u.managerId from UserMapping u where u.coachId = ?1 and u.employeeId is null")
+	Long findByCoachIdAndEmployeeIdIsNull(Long coachId);
 	
 	@Query("select um.employeeId from UserMapping um where um.managerId = :managerId and um.employeeId!=null and active = true")
 	List<Long> findEmployeeIdByManagerId(@Param("managerId") Long managerId);

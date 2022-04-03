@@ -14,4 +14,6 @@ public interface UserService {
 	ApiReturn getUserList(UserListReq clientId);
 
 	ApiReturn changeStatus(boolean status, Long userId) throws CommonException;
+
+	ApiReturn getAssignedUserDetails(Long userId) throws CommonException;
 }

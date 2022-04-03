@@ -133,18 +133,18 @@ public class UserMappingServiceImpl implements UserMappingService {
     @Override
     public ApiReturn getAllocatedEmployeesByCoachId(Long employeeTypeId, Long userId) throws CommonException {
         List<Long> employeeIds = null;
-        if (employeeTypeId.equals(Long.valueOf(Constants.EMPLOYEE))) {
-            Role role = roleRepo.findById(Long.valueOf(Constants.COACH)).orElseThrow(() -> new CommonException("Role Not Found"));
+        if (employeeTypeId.equals((long) Constants.EMPLOYEE)) {
+            Role role = roleRepo.findById((long) Constants.COACH).orElseThrow(() -> new CommonException("Role Not Found"));
             if (userRoleRepo.existsByUserIdAndRoleId(userId, role)) {
                 employeeIds = userMappingRepo.findEmployeeIdByCoachId(userId);
             }
-        } else if (employeeTypeId.equals(Long.valueOf(Constants.COACH))) {
-            Role role = roleRepo.findById(Long.valueOf(Constants.MANAGER)).orElseThrow(() -> new CommonException("Role Not Found"));
+        } else if (employeeTypeId.equals((long) Constants.COACH)) {
+            Role role = roleRepo.findById((long) Constants.MANAGER).orElseThrow(() -> new CommonException("Role Not Found"));
             if (userRoleRepo.existsByUserIdAndRoleId(userId, role)) {
                 employeeIds = userMappingRepo.findCoachIdByManagerId(userId);
             }
-        } else if (employeeTypeId.equals(Long.valueOf(Constants.MANAGER))) {
-            Role role = roleRepo.findById(Long.valueOf(Constants.MANAGER)).orElseThrow(() -> new CommonException("Role Not Found"));
+        } else if (employeeTypeId.equals((long) Constants.MANAGER)) {
+            Role role = roleRepo.findById((long) Constants.MANAGER).orElseThrow(() -> new CommonException("Role Not Found"));
             if (userRoleRepo.existsByUserIdAndRoleId(userId, role)) {
                 employeeIds = userMappingRepo.findEmployeeIdByManagerId(userId);
             }
