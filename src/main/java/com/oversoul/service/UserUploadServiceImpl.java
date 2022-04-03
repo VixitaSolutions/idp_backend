@@ -17,13 +17,12 @@ import com.oversoul.vo.ApiReturnWithResult;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -116,11 +115,20 @@ public class UserUploadServiceImpl implements UserUploadService {
             if (currentRow.getCell(4) != null && currentRow.getCell(4).getCellType() == CellType.STRING) {
                 String EmployeeType = currentRow.getCell(4).getStringCellValue().trim().toUpperCase();
 
-                if ((EmployeeType.equals(Constants.COACH) || EmployeeType.equals(Constants.EMPLOYEE)
-                        || EmployeeType.equals(Constants.MANAGER))) {
-                    role = roleRepository.findByName(EmployeeType);
+                if (EmployeeType.equalsIgnoreCase("COACH")) {
+                    role = roleRepository.findByIdAndActive((long) Constants.COACH, true);
+                } else if (EmployeeType.equalsIgnoreCase("EMPLOYEE")) {
+                    role = roleRepository.findByIdAndActive((long) Constants.EMPLOYEE, true);
+                } else if (EmployeeType.equalsIgnoreCase("MANAGER")) {
+                    role = roleRepository.findByIdAndActive((long) Constants.MANAGER, true);
+                } else if (EmployeeType.equalsIgnoreCase("ADMIN")) {
+                    role = roleRepository.findByIdAndActive((long) Constants.ADMIN, true);
                 } else {
-                    reason = reason != null ? reason + "/ Employee Type is invalid" : "Employee Type is invalid";
+                    reason = reason != null ? reason + "/ Employee ROle is invalid" : "Employee ROle is invalid";
+                    skipUpload = true;
+                }
+                if (role == null) {
+                    reason = reason != null ? reason + "/ Employee Role is invalid" : "Employee Role is invalid";
                     skipUpload = true;
                 }
             } else {
