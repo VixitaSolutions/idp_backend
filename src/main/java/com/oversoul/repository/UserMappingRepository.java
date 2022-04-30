@@ -14,7 +14,11 @@ public interface UserMappingRepository extends JpaRepository<UserMapping, Long> 
 
 	boolean existsByManagerIdAndCoachId(Long fromUserId, Long toUserId);
 
+	boolean existsByCoachIdAndManagerIdIsNotNull(Long coachId);
+
 	boolean existsByManagerIdAndEmployeeId(Long fromUserId, Long toUserId);
+
+	boolean existsByEmployeeIdAndManagerIdIsNotNull(Long employeeId);
 
 	boolean existsByCoachIdAndEmployeeId(Long fromUserId, Long toUserId);
 
@@ -39,4 +43,12 @@ public interface UserMappingRepository extends JpaRepository<UserMapping, Long> 
 	UserMapping findByCoachIdAndEmployeeId(Long fromUserId, Long toUserId);
 
 	UserMapping findByManagerIdAndEmployeeId(Long fromUserId, Long toUserId);
+
+	boolean existsByEmployeeIdAndCoachIdIsNotNull(Long employeeId);
+
+	UserMapping findByEmployeeIdAndCoachIdIsNotNull(Long toUserId);
+
+	UserMapping findByEmployeeIdAndManagerIdIsNotNull(Long toUserId);
+
+	UserMapping findByCoachIdAndManagerIdIsNotNull(Long toUserId);
 }

@@ -53,10 +53,10 @@ public class UserMappingServiceImpl implements UserMappingService {
         if (userMapVo.getFromRoleId() == (Constants.MANAGER) && userMapVo.getToRoleId() == (Constants.COACH)) {
             for (Long toUserId : userMapVo.getToUserId()) {
                 log.info("fromUserId {} and to user id {}", fromUserId, toUserId);
-                if (!userMappingRepo.existsByManagerIdAndCoachId(fromUserId, toUserId)) {
+                if (!userMappingRepo.existsByCoachIdAndManagerIdIsNotNull(toUserId)) {
                     mapList.add(new UserMapping(fromUserId, toUserId, null, loggedInUserId));
                 } else {
-                    UserMapping um = userMappingRepo.findByManagerIdAndCoachId(fromUserId, toUserId);
+                    UserMapping um = userMappingRepo.findByCoachIdAndManagerIdIsNotNull(toUserId);
                     log.info("this is already mapped user so updating record with id {}", um.getId());
                     um.setActive(true);
                     um.setDeLinkedBy(null);
@@ -67,10 +67,10 @@ public class UserMappingServiceImpl implements UserMappingService {
                 && userMapVo.getToRoleId() == (Constants.EMPLOYEE)) {
             for (Long toUserId : userMapVo.getToUserId()) {
                 log.info("fromUserId {} and to user id {}", fromUserId, toUserId);
-                if (!userMappingRepo.existsByManagerIdAndEmployeeId(fromUserId, toUserId)) {
+                if (!userMappingRepo.existsByEmployeeIdAndManagerIdIsNotNull(toUserId)) {
                     mapList.add(new UserMapping(fromUserId, null, toUserId, loggedInUserId));
                 } else {
-                    UserMapping um = userMappingRepo.findByManagerIdAndEmployeeId(fromUserId, toUserId);
+                    UserMapping um = userMappingRepo.findByEmployeeIdAndManagerIdIsNotNull(toUserId);
                     log.info("this is already mapped user so updating record with id {}", um.getId());
                     um.setActive(true);
                     um.setDeLinkedBy(null);
@@ -78,12 +78,13 @@ public class UserMappingServiceImpl implements UserMappingService {
                 }
             }
         } else if (userMapVo.getFromRoleId() == (Constants.COACH) && userMapVo.getToRoleId() == (Constants.EMPLOYEE)) {
+            log.info("assigning coach to the employee");
             for (Long toUserId : userMapVo.getToUserId()) {
                 log.info("fromUserId {} and to user id {}", fromUserId, toUserId);
-                if (!userMappingRepo.existsByCoachIdAndEmployeeId(fromUserId, toUserId)) {
+                if (!userMappingRepo.existsByEmployeeIdAndCoachIdIsNotNull(toUserId)) {
                     mapList.add(new UserMapping(null, fromUserId, toUserId, loggedInUserId));
                 } else {
-                    UserMapping um = userMappingRepo.findByCoachIdAndEmployeeId(fromUserId, toUserId);
+                    UserMapping um = userMappingRepo.findByEmployeeIdAndCoachIdIsNotNull(toUserId);
                     log.info("this is already mapped user so updating record with id {}", um.getId());
                     um.setActive(true);
                     um.setDeLinkedBy(null);
