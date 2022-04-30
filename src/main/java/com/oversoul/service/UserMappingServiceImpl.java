@@ -60,6 +60,7 @@ public class UserMappingServiceImpl implements UserMappingService {
                     log.info("this is already mapped user so updating record with id {}", um.getId());
                     um.setActive(true);
                     um.setDeLinkedBy(null);
+                    um.setManagerId(fromUserId);
                     mapList.add(um);
                 }
             }
@@ -74,6 +75,7 @@ public class UserMappingServiceImpl implements UserMappingService {
                     log.info("this is already mapped user so updating record with id {}", um.getId());
                     um.setActive(true);
                     um.setDeLinkedBy(null);
+                    um.setManagerId(fromUserId);
                     mapList.add(um);
                 }
             }
@@ -88,6 +90,7 @@ public class UserMappingServiceImpl implements UserMappingService {
                     log.info("this is already mapped user so updating record with id {}", um.getId());
                     um.setActive(true);
                     um.setDeLinkedBy(null);
+                    um.setCoachId(fromUserId);
                     mapList.add(um);
                 }
             }
