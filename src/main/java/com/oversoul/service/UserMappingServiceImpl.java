@@ -117,7 +117,7 @@ public class UserMappingServiceImpl implements UserMappingService {
                 && userMapVo.getToRoleId() == (Constants.EMPLOYEE)) {
             for (Long toUserId : userMapVo.getToUserId()) {
                 if (userMappingRepo.existsByManagerIdAndEmployeeId(fromUserId, toUserId)) {
-                    UserMapping um = userMappingRepo.findByManagerIdAndCoachId(fromUserId, toUserId);
+                    UserMapping um = userMappingRepo.findByManagerIdAndEmployeeId(fromUserId, toUserId);
                     um.setActive(false);
                     um.setDeLinkedBy(fromUserId);
                     mapList.add(um);
@@ -126,7 +126,7 @@ public class UserMappingServiceImpl implements UserMappingService {
         } else if (userMapVo.getFromRoleId() == (Constants.COACH) && userMapVo.getToRoleId() == (Constants.EMPLOYEE)) {
             for (Long toUserId : userMapVo.getToUserId()) {
                 if (userMappingRepo.existsByCoachIdAndEmployeeId(fromUserId, toUserId)) {
-                    UserMapping um = userMappingRepo.findByManagerIdAndCoachId(fromUserId, toUserId);
+                    UserMapping um = userMappingRepo.findByCoachIdAndEmployeeId(fromUserId, toUserId);
                     um.setActive(false);
                     um.setDeLinkedBy(fromUserId);
                     mapList.add(um);
