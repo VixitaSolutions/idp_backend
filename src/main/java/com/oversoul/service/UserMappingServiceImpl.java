@@ -70,7 +70,7 @@ public class UserMappingServiceImpl implements UserMappingService {
                 if (!userMappingRepo.existsByManagerIdAndEmployeeId(fromUserId, toUserId)) {
                     mapList.add(new UserMapping(fromUserId, null, toUserId, loggedInUserId));
                 } else {
-                    UserMapping um = userMappingRepo.findByManagerIdAndCoachId(fromUserId, toUserId);
+                    UserMapping um = userMappingRepo.findByManagerIdAndEmployeeId(fromUserId, toUserId);
                     log.info("this is already mapped user so updating record with id {}", um.getId());
                     um.setActive(true);
                     um.setDeLinkedBy(null);
@@ -83,7 +83,7 @@ public class UserMappingServiceImpl implements UserMappingService {
                 if (!userMappingRepo.existsByCoachIdAndEmployeeId(fromUserId, toUserId)) {
                     mapList.add(new UserMapping(null, fromUserId, toUserId, loggedInUserId));
                 } else {
-                    UserMapping um = userMappingRepo.findByManagerIdAndCoachId(fromUserId, toUserId);
+                    UserMapping um = userMappingRepo.findByCoachIdAndEmployeeId(fromUserId, toUserId);
                     log.info("this is already mapped user so updating record with id {}", um.getId());
                     um.setActive(true);
                     um.setDeLinkedBy(null);
