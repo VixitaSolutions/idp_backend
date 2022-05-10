@@ -32,5 +32,7 @@ public class EmployeeTaskReq {
 	private String empComments;
 	
 	private String coachComments;
+	
+	private Long progress;
 
 }

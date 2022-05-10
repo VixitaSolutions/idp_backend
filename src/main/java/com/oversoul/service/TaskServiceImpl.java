@@ -85,6 +85,7 @@ public class TaskServiceImpl implements TaskService {
             task.setTaskDescription(taskReq.getTaskDescription());
             task.setTaskName(taskReq.getTaskName());
             task.setTaskStatus(TaskStatus.OPEN);
+            task.setProgress(0l);
             task = employeeTaskDetailsRepo.save(task);
             taskReq.setTaskStatus(TaskStatus.OPEN);
             createTaskHistory(taskReq, loggedInUserId, task);
@@ -112,6 +113,7 @@ public class TaskServiceImpl implements TaskService {
         EmployeeTaskDetails task = employeeTaskDetailsRepo.findById(taskReq.getId()).orElseThrow(() -> new CommonException("Task Not existed"));
         Long loggedInUserId = Long.parseLong(MDC.get("userId"));
         task.setTaskStatus(taskReq.getTaskStatus());
+        task.setProgress(taskReq.getProgress());
         if (taskReq.getTaskStatus() == TaskStatus.REJECTED)
         	task.setEmpComments(taskReq.getEmpComments());
         if (taskReq.getTaskStatus() == TaskStatus.DECLINED)

@@ -63,5 +63,7 @@ public class EmployeeTaskDetails {
 	
 	@Column(length = 500)
 	private String coachComments;
+	
+	private Long progress;
 
 }
