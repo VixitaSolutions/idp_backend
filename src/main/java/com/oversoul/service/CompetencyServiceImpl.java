@@ -75,7 +75,7 @@ public class CompetencyServiceImpl implements CompetencyService {
             Long clientCompetencyLevel = null;
             String globalCompetencyName = null;
             Long globalCompetencyLevel = null;
-            String keyword = null;
+            //String keyword = null;
             if (currentRow.getCell(1) != null && currentRow.getCell(1).getCellType() == CellType.STRING) {
                 clientCompetencyName = currentRow.getCell(1).getStringCellValue().trim();
             } else {
@@ -100,21 +100,26 @@ public class CompetencyServiceImpl implements CompetencyService {
                 reason = reason != null ? reason + "/ Global Competency Level Should not empty" : "Global Competency Level Should not empty";
                 skipUpload = true;
             }
-            if (currentRow.getCell(5) != null && currentRow.getCell(5).getCellType() == CellType.STRING) {
+            /*if (currentRow.getCell(5) != null && currentRow.getCell(5).getCellType() == CellType.STRING) {
                 keyword = currentRow.getCell(5).getStringCellValue().trim();
-            }
+            }*/
 
             if (skipUpload) {
                 map.put(rowNo, reason);
             } else {
-                CompetencyDetails competencyDetails = new CompetencyDetails();
-                competencyDetails.setClientCompetencyName(clientCompetencyName);
-                competencyDetails.setClientCompetencyLevel(clientCompetencyLevel);
-                competencyDetails.setGlobalCompetencyName(globalCompetencyName);
-                competencyDetails.setGlobalCompetencyLevel(globalCompetencyLevel);
-                competencyDetails.setKeyword(keyword);
-                competencyDetailsList.add(competencyDetails);
-
+                Competency competency = competencyRepo.findByNameAllIgnoreCaseAndLevel(globalCompetencyName, globalCompetencyLevel);
+                if (competency != null) {
+                    CompetencyDetails competencyDetails = new CompetencyDetails();
+                    competencyDetails.setClientCompetencyName(clientCompetencyName);
+                    competencyDetails.setClientCompetencyLevel(clientCompetencyLevel);
+                    competencyDetails.setGlobalCompetencyName(globalCompetencyName);
+                    competencyDetails.setGlobalCompetencyLevel(globalCompetencyLevel);
+                    //competencyDetails.setKeyword(keyword);
+                    competencyDetailsList.add(competencyDetails);
+                } else {
+                    reason = reason != null ? reason + "/ Global Competency Not Existed in the system" : "Global Competency Not Existed in the system";
+                    map.put(rowNo, reason);
+                }
             }
         }
         if (map.isEmpty() && !competencyDetailsList.isEmpty()) {
@@ -123,14 +128,6 @@ public class CompetencyServiceImpl implements CompetencyService {
                 if (globalCompetency != null) {
                     log.info("globalCompetency details id {}", globalCompetency.getId());
                     saveClientCompetencyDetails(tenantId, competency, globalCompetency, createdBy);
-                } else {
-                    globalCompetency = new Competency();
-                    globalCompetency.setCreatedBy(createdBy);
-                    globalCompetency.setLevel(competency.getGlobalCompetencyLevel());
-                    globalCompetency.setName(competency.getGlobalCompetencyName());
-                    globalCompetency.setKeywords(competency.getKeyword());
-                    log.info("globalCompetency details id {}", globalCompetency.getId());
-                    saveClientCompetencyDetails(tenantId, competency,  competencyRepo.save(globalCompetency), createdBy);
                 }
             }
         }

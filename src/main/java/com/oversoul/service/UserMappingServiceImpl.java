@@ -12,6 +12,7 @@ import com.oversoul.util.Constants;
 import com.oversoul.vo.ApiReturn;
 import com.oversoul.vo.ApiReturnWithResult;
 import com.oversoul.vo.UserMapVo;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class UserMappingServiceImpl implements UserMappingService {
 
     private final UserMappingRepository userMappingRepo;
@@ -47,37 +49,48 @@ public class UserMappingServiceImpl implements UserMappingService {
 
         List<UserMapping> mapList = new ArrayList<>();
         Long fromUserId = userMapVo.getFromUserId();
+        log.info("from roleId {} and to RoleId {}", userMapVo.getFromRoleId(), userMapVo.getToRoleId());
         if (userMapVo.getFromRoleId() == (Constants.MANAGER) && userMapVo.getToRoleId() == (Constants.COACH)) {
             for (Long toUserId : userMapVo.getToUserId()) {
-                if (!userMappingRepo.existsByManagerIdAndCoachId(fromUserId, toUserId)) {
+                log.info("fromUserId {} and to user id {}", fromUserId, toUserId);
+                if (!userMappingRepo.existsByCoachIdAndManagerIdIsNotNull(toUserId)) {
                     mapList.add(new UserMapping(fromUserId, toUserId, null, loggedInUserId));
                 } else {
-                    UserMapping um = userMappingRepo.findByManagerIdAndCoachId(fromUserId, toUserId);
+                    UserMapping um = userMappingRepo.findByCoachIdAndManagerIdIsNotNull(toUserId);
+                    log.info("this is already mapped user so updating record with id {}", um.getId());
                     um.setActive(true);
                     um.setDeLinkedBy(null);
+                    um.setManagerId(fromUserId);
                     mapList.add(um);
                 }
             }
         } else if (userMapVo.getFromRoleId() == (Constants.MANAGER)
                 && userMapVo.getToRoleId() == (Constants.EMPLOYEE)) {
             for (Long toUserId : userMapVo.getToUserId()) {
-                if (!userMappingRepo.existsByManagerIdAndEmployeeId(fromUserId, toUserId)) {
+                log.info("fromUserId {} and to user id {}", fromUserId, toUserId);
+                if (!userMappingRepo.existsByEmployeeIdAndManagerIdIsNotNull(toUserId)) {
                     mapList.add(new UserMapping(fromUserId, null, toUserId, loggedInUserId));
                 } else {
-                    UserMapping um = userMappingRepo.findByManagerIdAndCoachId(fromUserId, toUserId);
+                    UserMapping um = userMappingRepo.findByEmployeeIdAndManagerIdIsNotNull(toUserId);
+                    log.info("this is already mapped user so updating record with id {}", um.getId());
                     um.setActive(true);
                     um.setDeLinkedBy(null);
+                    um.setManagerId(fromUserId);
                     mapList.add(um);
                 }
             }
         } else if (userMapVo.getFromRoleId() == (Constants.COACH) && userMapVo.getToRoleId() == (Constants.EMPLOYEE)) {
+            log.info("assigning coach to the employee");
             for (Long toUserId : userMapVo.getToUserId()) {
-                if (!userMappingRepo.existsByCoachIdAndEmployeeId(fromUserId, toUserId)) {
+                log.info("fromUserId {} and to user id {}", fromUserId, toUserId);
+                if (!userMappingRepo.existsByEmployeeIdAndCoachIdIsNotNull(toUserId)) {
                     mapList.add(new UserMapping(null, fromUserId, toUserId, loggedInUserId));
                 } else {
-                    UserMapping um = userMappingRepo.findByManagerIdAndCoachId(fromUserId, toUserId);
+                    UserMapping um = userMappingRepo.findByEmployeeIdAndCoachIdIsNotNull(toUserId);
+                    log.info("this is already mapped user so updating record with id {}", um.getId());
                     um.setActive(true);
                     um.setDeLinkedBy(null);
+                    um.setCoachId(fromUserId);
                     mapList.add(um);
                 }
             }
@@ -108,7 +121,7 @@ public class UserMappingServiceImpl implements UserMappingService {
                 && userMapVo.getToRoleId() == (Constants.EMPLOYEE)) {
             for (Long toUserId : userMapVo.getToUserId()) {
                 if (userMappingRepo.existsByManagerIdAndEmployeeId(fromUserId, toUserId)) {
-                    UserMapping um = userMappingRepo.findByManagerIdAndCoachId(fromUserId, toUserId);
+                    UserMapping um = userMappingRepo.findByManagerIdAndEmployeeId(fromUserId, toUserId);
                     um.setActive(false);
                     um.setDeLinkedBy(fromUserId);
                     mapList.add(um);
@@ -117,7 +130,7 @@ public class UserMappingServiceImpl implements UserMappingService {
         } else if (userMapVo.getFromRoleId() == (Constants.COACH) && userMapVo.getToRoleId() == (Constants.EMPLOYEE)) {
             for (Long toUserId : userMapVo.getToUserId()) {
                 if (userMappingRepo.existsByCoachIdAndEmployeeId(fromUserId, toUserId)) {
-                    UserMapping um = userMappingRepo.findByManagerIdAndCoachId(fromUserId, toUserId);
+                    UserMapping um = userMappingRepo.findByCoachIdAndEmployeeId(fromUserId, toUserId);
                     um.setActive(false);
                     um.setDeLinkedBy(fromUserId);
                     mapList.add(um);
@@ -161,7 +174,7 @@ public class UserMappingServiceImpl implements UserMappingService {
     @Override
     public ApiReturn getUnAllocatedEmployees(UUID tenantId) throws CommonException {
         List<Long> assignIds = userRoleRepo.findIdsByTenantId(tenantId);
-        Optional.ofNullable(assignIds).orElseThrow(()->new CommonException("Invalid Tenant or users not fount"));
+        Optional.ofNullable(assignIds).orElseThrow(() -> new CommonException("Invalid Tenant or users not fount"));
         return new ApiReturnWithResult(HttpStatus.OK.value(), ApiConstants.Status.SUCCESS.name(),
                 userRepo.findByIdNotInAndTenantId(assignIds, tenantId));
     }

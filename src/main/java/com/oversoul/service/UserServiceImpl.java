@@ -9,6 +9,7 @@ import com.oversoul.repository.*;
 import com.oversoul.util.ApiConstants;
 import com.oversoul.util.Constants;
 import com.oversoul.vo.*;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepo;
@@ -117,7 +119,9 @@ public class UserServiceImpl implements UserService {
         map.setToUserId(employeeIds);
         map.setFromRoleId((long) Constants.COACH);
         map.setToRoleId((long) Constants.EMPLOYEE);
+        log.info("before mapping user with coach");
         userMappingService.userMapping(map);
+        log.info("mapping completed");
 //        UserMapping existingMapedUser = userMappingRepo.findByManagerIdAndCoachIdAndEmployeeId(userRequest.getManagerId(), userRequest.getCoachId(), user.getId());
 //        if (existingMapedUser == null) {
 //            userMappingRepo.save(new UserMapping(loggedInUserId, userRequest.getCoachId(), user.getId(), loggedInUserId));
