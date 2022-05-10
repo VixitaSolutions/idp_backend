@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
             User user = userDetails.get();
             UserRole userRole = userRoleRepo.findByUserId(user.getId());
             return new ApiReturnWithResult(HttpStatus.OK.value(), ApiConstants.Status.SUCCESS.name(),
-                    new UserVo(user.getFirstName(), user.getLastName(), user.getUserName(),
+                    new UserVo(user.getFirstName(), user.getLastName(), user.getEmail(),
                             user.getId(),
                             new RoleVo(userRole.getId(), userRole.getRoleId().getName())));
         }
