@@ -29,7 +29,7 @@ public class SignatureFilter implements Filter {
 
     private static final Logger log = LoggerFactory.getLogger(SignatureFilter.class);
 
-    private static final String[] exemptedURLs = {"/health-check", "/api/auth/login"};
+    private static final String[] exemptedURLs = {"/health-check", "/api/auth/login","/mail"};
 
     @Value("${API.SIGNATURE.SECRET.KEY}")
     public String signatureSecretKey;
