@@ -23,19 +23,21 @@ public class AmazonSESServiceImpl implements AmazonSESService {
     static final String TO = "sairamm947@gmail.com";
 
     // Replace smtp_username with your Amazon SES SMTP user name.
-    static final String SMTP_USERNAME = "AKIAQZMQSUN4YP7RFJGN";
+    //static final String SMTP_USERNAME = "AKIAQZMQSUN4YP7RFJGN";
+    static final String SMTP_USERNAME = "AKIAQZMQSUN4UIMJVTFD";
 
     // Replace smtp_password with your Amazon SES SMTP password.
-    static final String SMTP_PASSWORD = "BGi5i8+eFiux7ioCxxYfFuyEk502zsfc8vUzFb6/iKcx";
+    // static final String SMTP_PASSWORD = "BGi5i8+eFiux7ioCxxYfFuyEk502zsfc8vUzFb6/iKcx";
+    static final String SMTP_PASSWORD = "BEnG5OBZ11O/Adv3bolV35yfiExdGsWTLIUoZG1Kik7Y";
 
 
     // Amazon SES SMTP host name. This example uses the US West (Oregon) region.
     // See https://docs.aws.amazon.com/ses/latest/DeveloperGuide/regions.html#region-endpoints
     // for more information.
-    static final String HOST = "email.ap-south-1.amazonaws.com";
+    static final String HOST = "email-smtp.ap-south-1.amazonaws.com";
 
     // The port you will connect to on the Amazon SES SMTP endpoint.
-    static final int PORT = 587;
+    static final int PORT = 465;
 
     static final String SUBJECT = "Amazon SES test (SMTP interface accessed using Java)";
 
@@ -54,7 +56,7 @@ public class AmazonSESServiceImpl implements AmazonSESService {
         Properties props = System.getProperties();
         props.put("mail.transport.protocol", "smtp");
         props.put("mail.smtp.port", PORT);
-        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.ssl.enable", "true");
         props.put("mail.smtp.auth", "true");
 
         // Create a Session object to represent a mail session with the specified properties.
