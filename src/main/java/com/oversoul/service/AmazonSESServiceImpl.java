@@ -23,12 +23,10 @@ public class AmazonSESServiceImpl implements AmazonSESService {
     static final String TO = "sairamm947@gmail.com";
 
     // Replace smtp_username with your Amazon SES SMTP user name.
-    //static final String SMTP_USERNAME = "AKIAQZMQSUN4YP7RFJGN";
-    static final String SMTP_USERNAME = "AKIAQZMQSUN4UIMJVTFD";
+    static final String SMTP_USERNAME = "";
 
     // Replace smtp_password with your Amazon SES SMTP password.
-    // static final String SMTP_PASSWORD = "BGi5i8+eFiux7ioCxxYfFuyEk502zsfc8vUzFb6/iKcx";
-    static final String SMTP_PASSWORD = "BEnG5OBZ11O/Adv3bolV35yfiExdGsWTLIUoZG1Kik7Y";
+    static final String SMTP_PASSWORD = "";
 
 
     // Amazon SES SMTP host name. This example uses the US West (Oregon) region.
