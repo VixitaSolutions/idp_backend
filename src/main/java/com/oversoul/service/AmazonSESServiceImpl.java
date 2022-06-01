@@ -1,5 +1,6 @@
 package com.oversoul.service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.mail.Message;
@@ -23,11 +24,12 @@ public class AmazonSESServiceImpl implements AmazonSESService {
     static final String TO = "sairamm947@gmail.com";
 
     // Replace smtp_username with your Amazon SES SMTP user name.
-    static final String SMTP_USERNAME = "";
+    @Value("SMTP_USERNAME")
+    private String SMTP_USERNAME ;
 
     // Replace smtp_password with your Amazon SES SMTP password.
-    static final String SMTP_PASSWORD = "";
-
+    @Value("SMTP_PASSWORD")
+    private String SMTP_PASSWORD ;
 
     // Amazon SES SMTP host name. This example uses the US West (Oregon) region.
     // See https://docs.aws.amazon.com/ses/latest/DeveloperGuide/regions.html#region-endpoints
