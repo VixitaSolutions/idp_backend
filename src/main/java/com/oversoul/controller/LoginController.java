@@ -27,7 +27,7 @@ public class LoginController {
 	}
 
 	@PostMapping("send/otp")
-	public ApiReturn sendOtp(@RequestBody UserSignUpVo userSignUpVo) {
+	public ApiReturn sendOtp(@RequestBody UserSignUpVo userSignUpVo) throws Exception {
 		return loginService.sendOtp(userSignUpVo);
 	}
 

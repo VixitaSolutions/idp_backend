@@ -5,7 +5,7 @@ import com.oversoul.vo.UserSignUpVo;
 
 public interface LoginService {
 
-	ApiReturn sendOtp(UserSignUpVo userSignUpVo);
+	ApiReturn sendOtp(UserSignUpVo userSignUpVo) throws Exception;
 
 	ApiReturn verifyOtp(UserSignUpVo userSignUpVo);
 
