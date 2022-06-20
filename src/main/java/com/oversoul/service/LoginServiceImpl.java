@@ -91,11 +91,12 @@ public class LoginServiceImpl implements LoginService {
     }
 
     @Override
-    public ApiReturn sendTemporaryPassword(UserSignUpVo userSignUpVo) {
+    public ApiReturn sendTemporaryPassword(UserSignUpVo userSignUpVo) throws Exception {
 
         User user = userRepo.findByEmailAndTenantId(userSignUpVo.getEmail(), UUID.fromString(MDC.get("tenantId")));
         if (user != null) {
             Integer otp = (int) (Math.floor(100000 + Math.random() * 900000));
+            amazonSESService.sendMail(userSignUpVo.getEmail(),formEmailContent(otp));
             user.setPassword(otp.toString());
             userRepo.save(user);
             return new ApiReturn(HttpStatus.OK.value(), ApiConstants.Status.SUCCESS.name(),

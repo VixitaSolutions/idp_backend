@@ -37,7 +37,7 @@ public class LoginController {
 	}
 
 	@PostMapping("send/temporaryPassword")
-	public ApiReturn sendTemporaryPassword(@RequestHeader(name = "tenant-id", required = false) String tenantId, @RequestBody UserSignUpVo userSignUpVo) {
+	public ApiReturn sendTemporaryPassword(@RequestHeader(name = "tenant-id", required = false) String tenantId, @RequestBody UserSignUpVo userSignUpVo) throws Exception {
 		if (!Optional.ofNullable(tenantId).isPresent()) {
 			return new ApiReturn(HttpStatus.OK.value(), ApiConstants.Status.FAILED.name(), "Invalid Tenant-ID");
 		}

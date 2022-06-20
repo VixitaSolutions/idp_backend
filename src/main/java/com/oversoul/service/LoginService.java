@@ -9,7 +9,7 @@ public interface LoginService {
 
 	ApiReturn verifyOtp(UserSignUpVo userSignUpVo);
 
-	ApiReturn sendTemporaryPassword(UserSignUpVo userSignUpVo);
+	ApiReturn sendTemporaryPassword(UserSignUpVo userSignUpVo) throws Exception;
 
 	ApiReturn verifyTemporaryPassword(UserSignUpVo userSignUpVo);
 

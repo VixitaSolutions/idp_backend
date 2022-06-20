@@ -7,20 +7,20 @@ import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClientBuilder;
 import com.amazonaws.services.simpleemail.model.*;
 import com.oversoul.exception.CommonException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 
 @Service
+@Slf4j
 public class AmazonSESServiceImpl implements AmazonSESService {
-
 
     static final String FROM = "idptoolvixita1@gmail.com";
     // The subject line for the email.
     static final String SUBJECT = "IDP";
     // The email body for recipients with non-HTML email clients.
-    static final String TEXTBODY = "This email was sent through Amazon SES "
-            + "using the AWS SDK for Java.";
+    static final String TEXTBODY = "";
     // Replace smtp_username with your Amazon SES SMTP user name.
     @Value("${SMTP_USERNAME}")
     private String SMTP_USERNAME;
@@ -31,6 +31,7 @@ public class AmazonSESServiceImpl implements AmazonSESService {
     @Override
     public String sendMail(String TO, String htmlBody) throws Exception {
         try {
+            log.info("sending mail to {}", TO);
             BasicAWSCredentials awsCreds = new BasicAWSCredentials(SMTP_USERNAME, SMTP_PASSWORD);
 
             AmazonSimpleEmailService client =
@@ -52,9 +53,9 @@ public class AmazonSESServiceImpl implements AmazonSESService {
                     .withSource(FROM);
 
             client.sendEmail(request);
-            System.out.println("Email sent!");
+            log.info("Email sent!");
         } catch (Exception ex) {
-            System.out.println("The email was not sent. Error message: "
+            log.info("The email was not sent. Error message: "
                     + ex.getMessage());
             throw new CommonException(ex.getMessage());
         }
