@@ -1,14 +1,16 @@
 package com.oversoul.repository;
 
-import com.oversoul.entity.User;
-import com.oversoul.projection.UserProjection;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import com.oversoul.entity.User;
+import com.oversoul.projection.UserProjection;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
@@ -50,4 +52,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query(value = "select u.id as id,u.email as email ,u.firstName as firstName,u.lastName as lastName,u.userName as userName,u.createdOn as createdOn,u.mobile as mobile,u.tenantId as tenantId,u.active as active,t.clientName as clientName from User u join  UserRole ur ON ur.userId=u.id join TenantDetails t ON t.id=u.tenantId ")
     List<UserProjection> findAllWithTenantName();
+    
+    Optional<User> findByEmailAndPassword(String email, String password);
 }

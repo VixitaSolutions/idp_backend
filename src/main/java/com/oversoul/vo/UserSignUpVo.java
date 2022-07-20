@@ -25,5 +25,7 @@ public class UserSignUpVo {
 
 	@Nonnull(when = When.ALWAYS)
 	private OtpType otpType;
+	
+	private String currentPassword;
 
 }

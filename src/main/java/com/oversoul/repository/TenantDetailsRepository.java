@@ -1,6 +1,7 @@
 package com.oversoul.repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,4 +20,6 @@ public interface TenantDetailsRepository extends JpaRepository<TenantDetails, UU
     List<TenantDetails> findByClientNameLikeIgnoreCaseAndStatus(String clientName, Boolean status);
 
     List<TenantDetails> findByClientNameLikeIgnoreCase(String clientName);
+    
+    Optional<TenantDetails> findByClientNameOrEmail(String clientName, String email);
 }

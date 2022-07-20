@@ -121,6 +121,18 @@ public class LoginServiceImpl implements LoginService {
     public ApiReturn createPassword(UserSignUpVo userSignUpVo) {
         User user = userRepo.findByEmail(userSignUpVo.getEmail());
         if (user != null) {
+        	if (!userSignUpVo.getCurrentPassword().isEmpty()) {
+        		if (!userRepo.findByEmailAndPassword(userSignUpVo.getEmail(), userSignUpVo.getCurrentPassword()).isPresent()) {
+        			return new ApiReturn(HttpStatus.OK.value(), ApiConstants.Status.FAILED.name(),
+                            "Current Password is invalid");
+        		}
+    			user.setPassword(userSignUpVo.getOtp());
+                user.setSignUpDone(true);
+                user.setSignUpDoneOn(new Date());
+                userRepo.save(user);
+                return new ApiReturn(HttpStatus.OK.value(), ApiConstants.Status.SUCCESS.name(),
+                        "Password updated Successfully");
+        	}
             user.setPassword(userSignUpVo.getOtp());
             user.setSignUpDone(true);
             user.setSignUpDoneOn(new Date());

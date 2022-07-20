@@ -1,5 +1,12 @@
 package com.oversoul.service;
 
+import java.util.Optional;
+import java.util.UUID;
+
+import org.slf4j.MDC;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oversoul.entity.TenantDetails;
 import com.oversoul.exception.NotFoundException;
@@ -8,11 +15,6 @@ import com.oversoul.util.ApiConstants;
 import com.oversoul.vo.ApiReturn;
 import com.oversoul.vo.ApiReturnWithResult;
 import com.oversoul.vo.TenantDetailsReq;
-import org.slf4j.MDC;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-
-import java.util.UUID;
 
 @Service
 public class TenantServiceImpl implements TenantService {
@@ -29,6 +31,10 @@ public class TenantServiceImpl implements TenantService {
     @Override
     public ApiReturn createTenant(TenantDetailsReq tenantDetailsReq) {
         Long userId = Long.parseLong(MDC.get("userId"));
+        Optional<TenantDetails> tenant = tenantDetailsRepo.findByClientNameOrEmail(tenantDetailsReq.getClientName(), tenantDetailsReq.getEmail());
+        if (tenant.isPresent()) {
+        	return new ApiReturn(HttpStatus.OK.value(), ApiConstants.Status.FAILED.name(), "Tenant Name/Email already exists");
+        }
         TenantDetails tenantDetails = objectMapper.convertValue(tenantDetailsReq, TenantDetails.class);
         tenantDetails.setCreatedBy(userId);
         UUID tenantId = tenantDetailsRepo.save(tenantDetails).getId();
