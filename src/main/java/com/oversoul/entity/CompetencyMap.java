@@ -27,17 +27,11 @@ public class CompetencyMap {
     private String keywords;
 
 
-    public String getTenantId(String tenantId) {
-        return this.tenantId;
-    }
-
-    public CompetencyMap setTenantId(String tenantId) {
-        this.tenantId = tenantId;
-        return null;
-    }
-
     @Column(name = "tenantId")
     private String tenantId;
+
+
+
     public CompetencyMap() {
     }
 
@@ -96,5 +90,13 @@ public class CompetencyMap {
 
     public void setKeywords(String keywords) {
         this.keywords = keywords;
+    }
+
+    public String getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
 }
