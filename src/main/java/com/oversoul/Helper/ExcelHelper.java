@@ -65,14 +65,14 @@ public class ExcelHelper {
                             break;
 
                         case 1:
-                            competence.setcLevel(currentCell.getStringCellValue());
+                            competence.setcLevel((int) currentCell.getNumericCellValue());
                             break;
 
                         case 2:
                             competence.setgName(currentCell.getStringCellValue());
                             break;
                         case 3:
-                            competence.setgLevel(currentCell.getStringCellValue());
+                            competence.setgLevel((int) currentCell.getNumericCellValue());
                             break;
                         case 4:
                             competence.setKeywords(currentCell.getStringCellValue());
