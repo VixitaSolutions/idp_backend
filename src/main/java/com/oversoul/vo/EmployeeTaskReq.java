@@ -15,7 +15,9 @@ import lombok.Setter;
 @AllArgsConstructor
 public class EmployeeTaskReq {
 
-	private Long id;
+    public String referanceUrl;
+
+    private Long id;
 
 	private Long employeeId;
 

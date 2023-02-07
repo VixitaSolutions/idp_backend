@@ -76,7 +76,7 @@ public class TaskServiceImpl implements TaskService {
         statusList.add(TaskStatus.ACCEPTED);
         statusList.add(TaskStatus.IN_PROGRESS);
         statusList.add(TaskStatus.COMPLETED);
-        if (!employeeTaskDetailsRepo.existsByEmployee_IdAndCompetencyAndTaskStatusIn(employee.getId(), competency.get(), statusList)) {
+        if (true) {
             EmployeeTaskDetails task = new EmployeeTaskDetails();
             task.setCompetency(competency.get());
             task.setCreatedBy(loggedInUserId);
@@ -84,6 +84,7 @@ public class TaskServiceImpl implements TaskService {
             task.setEmployee(employee);
             task.setTaskDescription(taskReq.getTaskDescription());
             task.setTaskName(taskReq.getTaskName());
+            task.setReferanceUrl(taskReq.referanceUrl);
             task.setTaskStatus(TaskStatus.OPEN);
             task.setProgress(0l);
             task = employeeTaskDetailsRepo.save(task);

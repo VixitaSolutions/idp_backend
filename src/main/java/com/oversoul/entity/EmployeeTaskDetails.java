@@ -47,6 +47,8 @@ public class EmployeeTaskDetails {
 	@Column(length = 500)
 	private String taskDescription;
 
+	private String referanceUrl;
+
 	private Long createdBy;
 
 	@CreationTimestamp
