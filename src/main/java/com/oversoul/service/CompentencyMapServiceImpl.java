@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import com.oversoul.entity.Competency;
 import com.oversoul.entity.CompetencyMap;
+import com.oversoul.exception.CommonException;
 import com.oversoul.repository.CompetencyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,9 @@ public class CompentencyMapServiceImpl{
             List<CompetencyMap> TutorialsList = repository.findAll();
             //List<Competency> globalData = ExcelHelper.excelToGlobalCompetency(file.getInputStream());
             for(int i=0;i<tutorials.size();i++){
+                if (tutorials.get(i).getcName().isEmpty() && tutorials.get(i).getgName().isEmpty()) {
+                    throw new CommonException("Client Competency or Global Competency are Empty");
+                }
                 tutorials.get(i).setTenantId(tenantId);
             }
             if(TutorialsList.size() > 0){
@@ -45,7 +49,7 @@ public class CompentencyMapServiceImpl{
             }
 
            //competencyRepo.saveAll(globalData);
-        } catch (IOException e) {
+        } catch (IOException | CommonException e) {
             throw new RuntimeException("fail to store excel data: " + e.getMessage());
         }
     }
