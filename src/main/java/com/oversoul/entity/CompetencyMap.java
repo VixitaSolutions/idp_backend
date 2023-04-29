@@ -21,10 +21,13 @@ public class CompetencyMap {
     private String gName;
 
     @Column(name = "gLevel")
-    private Integer gLevel;
+    private Long gLevel;
 
     @Column(name = "keywords")
     private String keywords;
+
+    @Column(name = "description")
+    private String description;
 
     @Column(name = "tenantId")
     private String tenantId;
@@ -34,13 +37,14 @@ public class CompetencyMap {
     public CompetencyMap() {
     }
 
-    public CompetencyMap(long id, String cName, Integer cLevel, String gName, Integer gLevel, String keywords, String tenantId) {
+    public CompetencyMap(long id, String cName, Integer cLevel, String gName, Long gLevel, String keywords, String tenantId, String description) {
         this.cName = cName;
         this.cLevel = cLevel;
         this.gName = gName;
         this.gLevel = gLevel;
         this.keywords = keywords;
         this.tenantId = tenantId;
+        this.description = description;
     }
 
     public long getId() {
@@ -75,11 +79,19 @@ public class CompetencyMap {
         this.gName = gName;
     }
 
-    public Integer getgLevel() {
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Long getgLevel() {
         return gLevel;
     }
 
-    public void setgLevel(Integer gLevel) {
+    public void setgLevel(Long gLevel) {
         this.gLevel = gLevel;
     }
 

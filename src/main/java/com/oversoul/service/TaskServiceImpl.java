@@ -4,25 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.oversoul.entity.*;
+import com.oversoul.repository.*;
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import com.oversoul.entity.ClientCompetency;
-import com.oversoul.entity.EmployeeTaskDetails;
-import com.oversoul.entity.EmployeeTaskHistory;
-import com.oversoul.entity.Role;
-import com.oversoul.entity.User;
 import com.oversoul.enums.TaskStatus;
 import com.oversoul.exception.CommonException;
-import com.oversoul.repository.ClientCompetencyRepository;
-import com.oversoul.repository.CourseRepository;
-import com.oversoul.repository.EmployeeTaskDetailsRepository;
-import com.oversoul.repository.EmployeeTaskHistoryRepository;
-import com.oversoul.repository.RoleRepository;
-import com.oversoul.repository.UserMappingRepository;
-import com.oversoul.repository.UserRepository;
-import com.oversoul.repository.UserRoleRepository;
 import com.oversoul.util.ApiConstants;
 import com.oversoul.util.Constants;
 import com.oversoul.vo.ApiReturn;
@@ -32,6 +21,8 @@ import com.oversoul.vo.EmployeeTaskReq;
 public class TaskServiceImpl implements TaskService {
 
     private final EmployeeTaskDetailsRepository employeeTaskDetailsRepo;
+
+    private final CompetencyRepository competencyRepository;
 
     private final EmployeeTaskHistoryRepository employeeTaskHistoryRepo;
 
@@ -49,9 +40,10 @@ public class TaskServiceImpl implements TaskService {
 
     public TaskServiceImpl(EmployeeTaskDetailsRepository employeeTaskDetailsRepo,
                            EmployeeTaskHistoryRepository employeeTaskHistoryRepo, CourseRepository courseRepo,
-                           UserRepository userRepo, ClientCompetencyRepository clientCompetencyRepo, UserMappingRepository userMappingRepo, UserRoleRepository userRoleRepo, RoleRepository roleRepo) {
+                           UserRepository userRepo, ClientCompetencyRepository clientCompetencyRepo,CompetencyRepository competencyRepository,UserMappingRepository userMappingRepo, UserRoleRepository userRoleRepo, RoleRepository roleRepo) {
         this.employeeTaskDetailsRepo = employeeTaskDetailsRepo;
         this.employeeTaskHistoryRepo = employeeTaskHistoryRepo;
+        this.competencyRepository = competencyRepository;
         this.userRepo = userRepo;
         this.courseRepo = courseRepo;
         this.clientCompetencyRepo = clientCompetencyRepo;
@@ -68,6 +60,7 @@ public class TaskServiceImpl implements TaskService {
 //        Course course = courseRepo.findByIdAndActive(taskReq.getCourseId(), true);
         Optional<ClientCompetency> competency = clientCompetencyRepo.findById(taskReq.getCompetencyId());
         if (!competency.isPresent()) {
+
             throw new CommonException("Invalid Course Details");
         }
         User employee = userRepo.findById(taskReq.getEmployeeId()).orElseThrow(() -> new CommonException("Invalid Employee Details"));

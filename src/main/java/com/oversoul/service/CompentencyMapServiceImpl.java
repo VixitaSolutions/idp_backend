@@ -26,14 +26,19 @@ public class CompentencyMapServiceImpl{
     private CompetencyMap competence;
     private boolean noDuplicates = false;
 
+    private final CompetencyRepository competencyRepository;
+
+    public CompentencyMapServiceImpl(CompetencyRepository competencyRepository) {
+        this.competencyRepository = competencyRepository;
+    }
 
     public void save(MultipartFile file, String tenantId) {
         try {
             List<CompetencyMap> dummyList = new ArrayList<CompetencyMap>();
             List<CompetencyMap> tutorials = ExcelHelper.excelToTutorials(file.getInputStream());
             List<CompetencyMap> TutorialsList = repository.findAll();
-            //List<Competency> globalData = ExcelHelper.excelToGlobalCompetency(file.getInputStream());
             for(int i=0;i<tutorials.size();i++){
+
                 if (tutorials.get(i).getcName().isEmpty() && tutorials.get(i).getgName().isEmpty()) {
                     throw new CommonException("Client Competency or Global Competency are Empty");
                 }

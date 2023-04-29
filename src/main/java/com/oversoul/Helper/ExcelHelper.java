@@ -17,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class ExcelHelper {
     public static String TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-    static String[] HEADERs = { "Id", "cName", "cLevel", "gName", "gLevel","keywords" };
+    static String[] HEADERs = { "Id", "cName", "cLevel", "gName", "gLevel","description", "keywords" };
     static String SHEET = "Sheet1";
 
     public static boolean hasExcelFormat(MultipartFile file) {
@@ -72,12 +72,14 @@ public class ExcelHelper {
                             competence.setgName(currentCell.getStringCellValue());
                             break;
                         case 3:
-                            competence.setgLevel((int) currentCell.getNumericCellValue());
+                            competence.setgLevel((long) currentCell.getNumericCellValue());
                             break;
                         case 4:
                             competence.setKeywords(currentCell.getStringCellValue());
                             break;
-                            
+                        case 5:
+                            competence.setDescription(currentCell.getStringCellValue());
+                            break;
                         default:
                             break;
                     }
