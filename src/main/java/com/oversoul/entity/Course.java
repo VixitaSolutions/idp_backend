@@ -32,6 +32,8 @@ public class Course {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
+	private String cName;
+
 	private String courseName;
 
 	private String description;
