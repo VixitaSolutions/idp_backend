@@ -10,12 +10,14 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.stereotype.Component;
 
 @Data
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Component
 public class UserSignUpVo {
 
 	@Nonnull(when = When.ALWAYS)
@@ -25,7 +27,8 @@ public class UserSignUpVo {
 
 	@Nonnull(when = When.ALWAYS)
 	private OtpType otpType;
-	
+
+	@Nonnull(when = When.ALWAYS)
 	private String currentPassword;
 
 }
